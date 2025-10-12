@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+{% block title %}{{ action }} - CV Generator{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="header">
+        <h1>{{ action }} elemento</h1>
+    </div>
+    <div style="padding: 40px;">
+        <form method="POST">
+            <!-- Habilidades: name, level, tags -->
+            {% if section == 'skills' %}
+                <div class="form-group">
+                    <label for="name">Nombre de la habilidad: *</label>
+                    <input type="text" id="name" name="name" class="form-control" 
+                           value="{{ item.get('name', '') }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="level">Nivel:</label>
+                    <select id="level" name="level" class="form-control">
+                        <option value="">Seleccionar...</option>
+                        <option value="Básico" {% if item.get('level') == 'Básico' %}selected{% endif %}>Básico</option>
+                        <option value="Intermedio" {% if item.get('level') == 'Intermedio' %}selected{% endif %}>Intermedio</option>
+                        <option value="Avanzado" {% if item.get('level') == 'Avanzado' %}selected{% endif %}>Avanzado</option>
+                        <option value="Experto" {% if item.get('level') == 'Experto' %}selected{% endif %}>Experto</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="tags">Etiquetas:</label>
+                    <input type="text" id="tags" name="tags" class="form-control" 
+                           value="{% if item.get('tags') %}{{ item.get('tags') | join(', ') }}{% endif %}"
+                           placeholder="Separar con comas">
+                </div>
+            
+            <!-- Experiencia y Proyectos: title, company, location, start, end, description, tech -->
+            {% elif section in ['experience', 'projects'] %}
+                <div class="form-group">
+                    <label for="title">Título del puesto: *</label>
+                    <input type="text" id="title" name="title" class="form-control" 
+                           value="{{ item.get('title', '') }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="company">Empresa: *</label>
+                    <input type="text" id="company" name="company" class="form-control" 
+                           value="{{ item.get('company', '') }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="location">Ubicación:</label>
+                    <input type="text" id="location" name="location" class="form-control" 
+                           value="{{ item.get('location', '') }}"
+                           placeholder="Ciudad, País">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label for="start">Fecha de inicio:</label>
+                        <input type="text" id="start" name="start" class="form-control" 
+                               value="{{ item.get('start', '') }}"
+                               placeholder="YYYY-MM o YYYY">
+                    </div>
+                    <div class="form-group">
+                        <label for="end">Fecha de fin:</label>
+                        <input type="text" id="end" name="end" class="form-control" 
+                               value="{{ item.get('end', '') }}"
+                               placeholder="YYYY-MM, YYYY o 'Actual'">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="description">Descripción:</label>
+                    <textarea id="description" name="description" class="form-control" rows="4" 
+                              placeholder="Describe las responsabilidades y logros">{{ item.get('description', '') }}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="tech">Tecnologías:</label>
+                    <input type="text" id="tech" name="tech" class="form-control" 
+                           value="{% if item.get('tech') %}{{ item.get('tech') | join(', ') }}{% endif %}"
+                           placeholder="Python, JavaScript, SQL... (separar con comas)">
+                </div>
+            
+            <!-- Educación: degree, institution, start, end, notes -->
+            {% elif section == 'education' %}
+                <div class="form-group">
+                    <label for="degree">Titulación: *</label>
+                    <input type="text" id="degree" name="degree" class="form-control" 
+                           value="{{ item.get('degree', '') }}" required
+                           placeholder="Ej: Grado en Ingeniería Informática">
+                </div>
+                <div class="form-group">
+                    <label for="institution">Institución: *</label>
+                    <input type="text" id="institution" name="institution" class="form-control" 
+                           value="{{ item.get('institution', '') }}" required
+                           placeholder="Ej: Universidad de Madrid">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label for="start">Fecha de inicio:</label>
+                        <input type="text" id="start" name="start" class="form-control" 
+                               value="{{ item.get('start', '') }}"
+                               placeholder="YYYY">
+                    </div>
+                    <div class="form-group">
+                        <label for="end">Fecha de fin:</label>
+                        <input type="text" id="end" name="end" class="form-control" 
+                               value="{{ item.get('end', '') }}"
+                               placeholder="YYYY o 'Actual'">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="notes">Notas adicionales:</label>
+                    <textarea id="notes" name="notes" class="form-control" rows="3" 
+                              placeholder="Especialización, calificaciones, logros...">{{ item.get('notes', '') }}</textarea>
+                </div>
+            
+            <!-- Cursos: name, issuer, date, hours, credential, tags -->
+            {% elif section == 'courses' %}
+                <div class="form-group">
+                    <label for="name">Nombre del curso: *</label>
+                    <input type="text" id="name" name="name" class="form-control" 
+                           value="{{ item.get('name', '') }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="issuer">Emisor/Plataforma:</label>
+                    <input type="text" id="issuer" name="issuer" class="form-control" 
+                           value="{{ item.get('issuer', '') }}"
+                           placeholder="Ej: Coursera, Udemy, LinkedIn Learning">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label for="date">Fecha:</label>
+                        <input type="text" id="date" name="date" class="form-control" 
+                               value="{{ item.get('date', '') }}"
+                               placeholder="YYYY-MM o YYYY">
+                    </div>
+                    <div class="form-group">
+                        <label for="hours">Horas:</label>
+                        <input type="number" id="hours" name="hours" class="form-control" 
+                               value="{{ item.get('hours', '') }}"
+                               placeholder="Número de horas">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="credential">Credencial/Certificado:</label>
+                    <input type="text" id="credential" name="credential" class="form-control" 
+                           value="{{ item.get('credential', '') }}"
+                           placeholder="URL o ID del certificado">
+                </div>
+                <div class="form-group">
+                    <label for="tags">Etiquetas:</label>
+                    <input type="text" id="tags" name="tags" class="form-control" 
+                           value="{% if item.get('tags') %}{{ item.get('tags') | join(', ') }}{% endif %}"
+                           placeholder="Python, Machine Learning... (separar con comas)">
+                </div>
+            
+            <!-- Otros: title, institution, start, end, periodo, description, tags -->
+            {% elif section == 'otros' %}
+                <div class="form-group">
+                    <label for="title">Título:</label>
+                    <input type="text" id="title" name="title" class="form-control" 
+                           value="{{ item.get('title', '') }}">
+                </div>
+                <div class="form-group">
+                    <label for="institution">Institución/Organización:</label>
+                    <input type="text" id="institution" name="institution" class="form-control" 
+                           value="{{ item.get('institution', '') }}">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label for="start">Fecha de inicio:</label>
+                        <input type="text" id="start" name="start" class="form-control" 
+                               value="{{ item.get('start', '') }}"
+                               placeholder="YYYY-MM o YYYY">
+                    </div>
+                    <div class="form-group">
+                        <label for="end">Fecha de fin:</label>
+                        <input type="text" id="end" name="end" class="form-control" 
+                               value="{{ item.get('end', '') }}"
+                               placeholder="YYYY-MM, YYYY o 'Actual'">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="periodo">Periodo (alternativo):</label>
+                    <input type="text" id="periodo" name="periodo" class="form-control" 
+                           value="{{ item.get('periodo', '') }}"
+                           placeholder="Ej: Verano 2023">
+                </div>
+                <div class="form-group">
+                    <label for="description">Descripción:</label>
+                    <textarea id="description" name="description" class="form-control" rows="4" 
+                              placeholder="Información adicional">{{ item.get('description', '') }}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="tags">Etiquetas:</label>
+                    <input type="text" id="tags" name="tags" class="form-control" 
+                           value="{% if item.get('tags') %}{{ item.get('tags') | join(', ') }}{% endif %}"
+                           placeholder="Separar con comas">
+                </div>
+            {% endif %}
+
+            <div style="text-align: center; margin-top: 30px;">
+                <button type="submit" class="btn btn-success">💾 {{ action }}</button>
+                <a href="{{ url_for('list_items', section=section) }}" class="btn btn-secondary">❌ Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

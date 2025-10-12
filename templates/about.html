@@ -1,0 +1,341 @@
+{% extends "base.html" %} {% block title %}Acerca de - CV Generator{% endblock
+%} {% block content %}
+<div class="container">
+  <div class="header">
+    <h1>ℹ️ Acerca de CV Generator</h1>
+    <p>
+      Tu herramienta definitiva para crear currículums profesionales
+      personalizados
+    </p>
+  </div>
+
+  <div style="padding: 40px">
+    <div
+      style="
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-bottom: 40px;
+      "
+    >
+      <!-- Qué es -->
+      <div class="card">
+        <h2 style="color: #667eea; margin-bottom: 20px">
+          <i class="fas fa-info-circle"></i> ¿Qué es CV Generator?
+        </h2>
+        <p style="color: #6c757d; line-height: 1.6; margin-bottom: 15px">
+          CV Generator es una aplicación web diseñada para ayudarte a crear
+          currículums profesionales adaptados a cada oportunidad laboral. Con
+          nuestra funcionalidad de personalización inteligente, puedes
+          seleccionar y organizar los elementos más relevantes para cada oferta
+          de trabajo.
+        </p>
+        <ul style="color: #495057; margin-left: 20px">
+          <li>Gestión completa de tu información profesional</li>
+          <li>Personalización por oferta de trabajo</li>
+          <li>Plantillas reutilizables</li>
+          <li>Múltiples formatos de exportación</li>
+        </ul>
+      </div>
+
+      <!-- Características -->
+      <div class="card">
+        <h2 style="color: #28a745; margin-bottom: 20px">
+          <i class="fas fa-star"></i> Características Principales
+        </h2>
+        <div style="space-y: 15px">
+          <div style="margin-bottom: 15px">
+            <strong style="color: #2c3e50"
+              >🎯 Personalización Inteligente</strong
+            >
+            <p style="color: #6c757d; font-size: 0.9em; margin-top: 5px">
+              Selecciona elementos específicos para cada tipo de trabajo
+            </p>
+          </div>
+          <div style="margin-bottom: 15px">
+            <strong style="color: #2c3e50">🔄 Drag & Drop</strong>
+            <p style="color: #6c757d; font-size: 0.9em; margin-top: 5px">
+              Reordena elementos simplemente arrastrándolos
+            </p>
+          </div>
+          <div style="margin-bottom: 15px">
+            <strong style="color: #2c3e50">💾 Plantillas Guardadas</strong>
+            <p style="color: #6c757d; font-size: 0.9em; margin-top: 5px">
+              Guarda configuraciones para reutilizar en trabajos similares
+            </p>
+          </div>
+          <div style="margin-bottom: 15px">
+            <strong style="color: #2c3e50">👁️ Vista Previa</strong>
+            <p style="color: #6c757d; font-size: 0.9em; margin-top: 5px">
+              Ve cómo quedará tu CV antes de generarlo
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cómo usar -->
+      <div class="card">
+        <h2 style="color: #dc3545; margin-bottom: 20px">
+          <i class="fas fa-question-circle"></i> ¿Cómo usar la aplicación?
+        </h2>
+        <div style="space-y: 20px">
+          <div style="display: flex; align-items: start; margin-bottom: 20px">
+            <span
+              style="
+                background: #667eea;
+                color: white;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                margin-right: 15px;
+                flex-shrink: 0;
+              "
+              >1</span
+            >
+            <div>
+              <strong style="color: #2c3e50">Configura tus datos</strong>
+              <p style="color: #6c757d; font-size: 0.9em; margin-top: 5px">
+                Añade tu información de contacto, experiencia, habilidades,
+                educación y proyectos
+              </p>
+            </div>
+          </div>
+          <div style="display: flex; align-items: start; margin-bottom: 20px">
+            <span
+              style="
+                background: #667eea;
+                color: white;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                margin-right: 15px;
+                flex-shrink: 0;
+              "
+              >2</span
+            >
+            <div>
+              <strong style="color: #2c3e50">Personaliza por oferta</strong>
+              <p style="color: #6c757d; font-size: 0.9em; margin-top: 5px">
+                Ve a "Personalizar" y selecciona solo los elementos relevantes
+                para cada trabajo
+              </p>
+            </div>
+          </div>
+          <div style="display: flex; align-items: start; margin-bottom: 20px">
+            <span
+              style="
+                background: #667eea;
+                color: white;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                margin-right: 15px;
+                flex-shrink: 0;
+              "
+              >3</span
+            >
+            <div>
+              <strong style="color: #2c3e50">Guarda plantillas</strong>
+              <p style="color: #6c757d; font-size: 0.9em; margin-top: 5px">
+                Crea configuraciones como "Frontend", "Marketing", etc. para
+                reutilizar
+              </p>
+            </div>
+          </div>
+          <div style="display: flex; align-items: start">
+            <span
+              style="
+                background: #667eea;
+                color: white;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                margin-right: 15px;
+                flex-shrink: 0;
+              "
+              >4</span
+            >
+            <div>
+              <strong style="color: #2c3e50">Genera y descarga</strong>
+              <p style="color: #6c757d; font-size: 0.9em; margin-top: 5px">
+                Obtén tu CV personalizado en formato Markdown o texto plano
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tecnologías -->
+      <div class="card">
+        <h2 style="color: #6f42c1; margin-bottom: 20px">
+          <i class="fas fa-code"></i> Tecnologías Utilizadas
+        </h2>
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+          "
+        >
+          <div
+            style="
+              text-align: center;
+              padding: 15px;
+              background: #f8f9fa;
+              border-radius: 8px;
+            "
+          >
+            <div style="font-size: 2em; margin-bottom: 5px">🐍</div>
+            <strong style="color: #2c3e50">Python</strong>
+            <br /><small style="color: #6c757d">Flask</small>
+          </div>
+          <div
+            style="
+              text-align: center;
+              padding: 15px;
+              background: #f8f9fa;
+              border-radius: 8px;
+            "
+          >
+            <div style="font-size: 2em; margin-bottom: 5px">🌐</div>
+            <strong style="color: #2c3e50">HTML/CSS</strong>
+            <br /><small style="color: #6c757d">JavaScript</small>
+          </div>
+          <div
+            style="
+              text-align: center;
+              padding: 15px;
+              background: #f8f9fa;
+              border-radius: 8px;
+            "
+          >
+            <div style="font-size: 2em; margin-bottom: 5px">📝</div>
+            <strong style="color: #2c3e50">Jinja2</strong>
+            <br /><small style="color: #6c757d">Templates</small>
+          </div>
+          <div
+            style="
+              text-align: center;
+              padding: 15px;
+              background: #f8f9fa;
+              border-radius: 8px;
+            "
+          >
+            <div style="font-size: 2em; margin-bottom: 5px">🎨</div>
+            <strong style="color: #2c3e50">SortableJS</strong>
+            <br /><small style="color: #6c757d">Drag & Drop</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Consejos -->
+      <div class="card">
+        <h2 style="color: #fd7e14; margin-bottom: 20px">
+          <i class="fas fa-lightbulb"></i> Consejos para un CV Exitoso
+        </h2>
+        <ul style="color: #495057; margin-left: 20px; space-y: 10px">
+          <li style="margin-bottom: 10px">
+            <strong>Personaliza siempre:</strong> Adapta tu CV a cada oferta
+            específica
+          </li>
+          <li style="margin-bottom: 10px">
+            <strong>Sé conciso:</strong> Incluye solo la información más
+            relevante
+          </li>
+          <li style="margin-bottom: 10px">
+            <strong>Ordena estratégicamente:</strong> Pon primero lo más
+            importante para el puesto
+          </li>
+          <li style="margin-bottom: 10px">
+            <strong>Usa palabras clave:</strong> Incluye términos mencionados en
+            la oferta de trabajo
+          </li>
+          <li style="margin-bottom: 10px">
+            <strong>Mantén actualizado:</strong> Revisa y actualiza tu
+            información regularmente
+          </li>
+        </ul>
+      </div>
+
+      <!-- Soporte -->
+      <div class="card">
+        <h2 style="color: #17a2b8; margin-bottom: 20px">
+          <i class="fas fa-life-ring"></i> Soporte y Desarrollo
+        </h2>
+        <p style="color: #6c757d; line-height: 1.6; margin-bottom: 20px">
+          CV Generator es una aplicación desarrollada con tecnologías modernas y
+          está en constante mejora.
+        </p>
+        <div style="display: flex; gap: 15px; flex-wrap: wrap">
+          <a href="{{ url_for('index') }}" class="btn btn-primary">
+            <i class="fas fa-home"></i> Volver al Inicio
+          </a>
+          <a href="{{ url_for('customize') }}" class="btn btn-success">
+            <i class="fas fa-magic"></i> Personalizar CV
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer de la página -->
+    <div
+      style="
+        text-align: center;
+        padding: 30px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        margin-top: 30px;
+      "
+    >
+      <h3 style="color: #2c3e50; margin-bottom: 15px">
+        🚀 ¡Comienza a crear tu CV profesional!
+      </h3>
+      <p style="color: #6c757d; margin-bottom: 20px">
+        Con CV Generator, cada aplicación de trabajo tendrá el CV perfecto para
+        destacar
+      </p>
+      <div
+        style="
+          display: flex;
+          gap: 15px;
+          justify-content: center;
+          flex-wrap: wrap;
+        "
+      >
+        <a href="{{ url_for('contact') }}" class="btn btn-primary">
+          <i class="fas fa-user-plus"></i> Configurar Datos
+        </a>
+        <a href="{{ url_for('customize') }}" class="btn btn-success">
+          <i class="fas fa-magic"></i> Personalizar Ahora
+        </a>
+      </div>
+      <div class="card">
+        <h2 style="color: #667eea; margin-bottom: 20px">🎓 Tour Guiado</h2>
+        <p style="margin-bottom: 20px">
+          ¿Necesitas un repaso? Vuelve a ver el tour interactivo que explica
+          cómo usar todas las funcionalidades de CV Generator.
+        </p>
+        <button onclick="startCVTour()" class="btn btn-primary">
+          🚀 Iniciar Tour Guiado
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
