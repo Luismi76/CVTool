@@ -11,7 +11,7 @@
   <img alt="Stars" src="https://img.shields.io/github/stars/Luismi76/CVTool.svg?style=social">
 </p>
 
-**CVTool** es una aplicación web escrita en Python que permite generar y gestionar currículums de forma flexible desde una interfaz local sencilla.  
+**CVTool** es una aplicación web escrita en Python que permite generar y gestionar currículums de forma flexible desde una interfaz local sencilla.
 El proyecto está diseñado para que el usuario final pueda descargar un único archivo ejecutable (`.exe`) y utilizarlo sin necesidad de instalar dependencias manualmente.
 
 ---
@@ -42,9 +42,26 @@ CVTool/
 
 Si quieres ejecutar el proyecto desde código fuente:
 
-- Python 3.11 (recomendado)
-- pip
-- virtualenv (opcional)
+* Python 3.11 (recomendado)
+* pip
+* virtualenv (opcional)
+
+---
+
+## 💻 Descarga directa para usuarios finales
+
+Si solo quieres **usar la aplicación** y no ver ni modificar el código:
+
+1. Ve a la sección [Releases](https://github.com/Luismi76/CVTool/releases).
+2. Descarga el archivo `CV_Generator.exe` más reciente.
+3. Haz doble clic para ejecutarlo.
+4. El navegador se abrirá automáticamente en:
+
+```
+http://127.0.0.1:5000
+```
+
+No necesitas instalar Python ni dependencias adicionales. El programa se ejecuta de forma local y segura en tu equipo.
 
 ---
 
@@ -73,26 +90,26 @@ http://127.0.0.1:5000
 1. Asegúrate de tener activado el entorno con Python 3.11.
 
 2. Ejecuta el empaquetado con PyInstaller:
-   
-   ```powershell
-   pyinstaller --onefile --noconsole --name CV_Generator `
-   --add-data "templates;templates" `
-   --add-data "static;static" `
-   --add-data "render_templates;render_templates" `
-   run.py
-   ```
+
+```powershell
+pyinstaller --onefile --noconsole --name CV_Generator `
+  --add-data "templates;templates" `
+  --add-data "static;static" `
+  --add-data "render_templates;render_templates" `
+  run.py
+```
 
 3. El archivo final estará en:
-   
-   ```
-   dist\CV_Generator.exe
-   ```
+
+```
+dist\CV_Generator.exe
+```
 
 4. Ejecuta el `.exe` para iniciar la aplicación. Se abrirá automáticamente en tu navegador:
-   
-   ```
-   http://127.0.0.1:5000
-   ```
+
+```
+http://127.0.0.1:5000
+```
 
 ---
 
@@ -100,11 +117,12 @@ http://127.0.0.1:5000
 
 1. **Genera el .exe** como se indica arriba.
 2. Crea un tag en Git:
-   
-   ```powershell
-   git tag v0.1.0
-   git push origin v0.1.0
-   ```
+
+```powershell
+git tag v0.1.0
+git push origin v0.1.0
+```
+
 3. Ve a [Releases](https://github.com/Luismi76/CVTool/releases) → **Draft a new release**.
 4. Selecciona el tag `v0.1.0`, pon título y descripción.
 5. **Arrastra `dist/CV_Generator.exe` al apartado “Assets”**.
@@ -116,17 +134,17 @@ El ejecutable aparecerá como archivo descargable.
 
 ## 📝 Scripts útiles
 
-- `instalar.sh` / `instalar.bat`: instalación automatizada.
-- `ejecutar.sh` / `ejecutar.bat`: ejecución rápida local.
+* `instalar.sh` / `instalar.bat`: instalación automatizada.
+* `ejecutar.sh` / `ejecutar.bat`: ejecución rápida local.
 
 ---
 
 ## 🧭 Roadmap
 
-- 📝 Integrar funciones avanzadas de gestión de CV.
-- 🧰 Mejorar la interfaz web.
-- 🌐 Añadir soporte para múltiples plantillas.
-- 🚀 Publicación automatizada de binarios.
+* 📝 Integrar funciones avanzadas de gestión de CV.
+* 🧰 Mejorar la interfaz web.
+* 🌐 Añadir soporte para múltiples plantillas.
+* 🚀 Publicación automatizada de binarios.
 
 ---
 
@@ -134,10 +152,11 @@ El ejecutable aparecerá como archivo descargable.
 
 1. Haz un **fork** del repositorio.
 2. Crea una rama:
-   
-   ```bash
-   git checkout -b feature/mi-mejora
-   ```
+
+```bash
+git checkout -b feature/mi-mejora
+```
+
 3. Realiza tus cambios y tests.
 4. Envía un Pull Request.
 
@@ -175,5 +194,5 @@ SOFTWARE.
 
 ## 📌 Créditos
 
-Desarrollado por [Luismi76](https://github.com/Luismi76).  
+Desarrollado por [Luismi76](https://github.com/Luismi76).
 Proyecto en evolución orientado a simplificar la creación de CVs locales sin instalación de dependencias complejas.
