@@ -535,9 +535,18 @@
         <div class="form-group">
             <label for="output-format">Formato:</label>
             <select id="output-format" class="form-control">
-                <option value="md">Markdown (.md)</option>
-                <option value="txt">Texto plano (.txt)</option>
+                <option value="pdf">📕 PDF (Profesional)</option>
+                <option value="md">📝 Markdown (.md)</option>
+                <option value="txt">📄 Texto plano (.txt)</option>
             </select>
+        </div>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0; font-size: 0.9em;">
+            <strong>ℹ️ Información sobre formatos:</strong>
+            <ul style="margin: 10px 0 0 20px; line-height: 1.6;">
+                <li><strong>PDF:</strong> Formato profesional listo para enviar</li>
+                <li><strong>Markdown:</strong> Ideal para GitHub y portales técnicos</li>
+                <li><strong>Texto plano:</strong> Compatible con sistemas ATS</li>
+            </ul>
         </div>
         <div class="btn-group">
             <button id="confirm-generate-btn" class="btn btn-success">✅ Generar y Descargar</button>
@@ -907,7 +916,7 @@ class CVCustomizer {
             document.getElementById('preview-modal').style.display = 'none';
         });
         
-        // Modal de generar CV
+// Modal de generar CV
         document.getElementById('confirm-generate-btn').addEventListener('click', async () => {
             const name = document.getElementById('output-name').value.trim();
             const format = document.getElementById('output-format').value;
@@ -917,6 +926,16 @@ class CVCustomizer {
                 return;
             }
             
+            // Si es PDF, redirigir a la ruta de PDF con los datos
+            if (format === 'pdf') {
+                const selectionData = encodeURIComponent(JSON.stringify(this.selection));
+                window.location.href = `/generar/pdf?outname=${encodeURIComponent(name)}&selection_data=${selectionData}`;
+                this.showNotification('Generando PDF...', 'success');
+                document.getElementById('generate-modal').style.display = 'none';
+                return;
+            }
+            
+            // Para MD y TXT, usar la ruta actual
             try {
                 const response = await fetch('/generar/personalizado', {
                     method: 'POST',
@@ -940,10 +959,6 @@ class CVCustomizer {
                 console.error('Error:', error);
                 this.showNotification('Error al generar el CV', 'error');
             }
-        });
-        
-        document.getElementById('cancel-generate-btn').addEventListener('click', () => {
-            document.getElementById('generate-modal').style.display = 'none';
         });
         
         // Cerrar modales haciendo clic fuera

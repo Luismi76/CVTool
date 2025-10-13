@@ -4,32 +4,95 @@
 <div class="container">
     <div class="header">
         <h1>📄 Generar CV</h1>
+        <p>Exporta tu currículum en diferentes formatos</p>
     </div>
     <div style="padding: 40px;">
-        <form method="POST">
+        <form method="POST" id="generateForm">
             <div class="form-group">
                 <label for="fmt">Formato:</label>
                 <select id="fmt" name="fmt" class="form-control">
-                    <option value="md" {{ 'selected' if fmt == 'md' else '' }}>Markdown</option>
-                    <option value="txt" {{ 'selected' if fmt == 'txt' else '' }}>Texto plano</option>
+                    <option value="md" {{ 'selected' if fmt == 'md' else '' }}>📝 Markdown</option>
+                    <option value="txt" {{ 'selected' if fmt == 'txt' else '' }}>📄 Texto plano</option>
+                    <option value="pdf">📕 PDF (Profesional)</option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="outname">Nombre del archivo:</label>
-                <input type="text" id="outname" name="outname" class="form-control" value="{{ outname }}">
+                <input type="text" id="outname" name="outname" class="form-control" value="{{ outname }}" placeholder="CV">
             </div>
+            
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h4 style="margin-bottom: 15px; color: #2c3e50;">ℹ️ Información sobre formatos</h4>
+                <div style="display: grid; gap: 15px;">
+                    <div>
+                        <strong>📝 Markdown:</strong> Ideal para GitHub, documentación técnica y portales de desarrolladores.
+                    </div>
+                    <div>
+                        <strong>📄 Texto plano:</strong> Compatible con sistemas ATS (Applicant Tracking Systems).
+                    </div>
+                    <div>
+                        <strong>📕 PDF:</strong> Formato profesional para enviar por email o cargar en portales de empleo.
+                    </div>
+                </div>
+            </div>
+            
             <div style="text-align: center; margin-top: 30px;">
-                <button type="submit" class="btn btn-success">📥 Generar CV</button>
+                <button type="submit" class="btn btn-success">
+                    <span id="btnText">📥 Generar CV</span>
+                </button>
             </div>
         </form>
+        
         {% if outputs %}
-        <div style="margin-top: 30px;">
-            <h3>Archivos generados:</h3>
-            {% for file in outputs %}
-            <a href="{{ url_for('download', path=file) }}" class="btn btn-primary">📥 Descargar {{ file }}</a>
-            {% endfor %}
+        <div style="margin-top: 30px; padding: 20px; background: #e8f5e9; border-radius: 8px;">
+            <h3 style="color: #2c3e50; margin-bottom: 15px;">✅ Archivos generados:</h3>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                {% for file in outputs %}
+                <a href="{{ url_for('download', path=file) }}" class="btn btn-primary">📥 Descargar {{ file }}</a>
+                {% endfor %}
+            </div>
         </div>
         {% endif %}
     </div>
 </div>
+
+<script>
+document.getElementById('generateForm').addEventListener('submit', function(e) {
+    const fmt = document.getElementById('fmt').value;
+    const outname = document.getElementById('outname').value || 'CV';
+    
+    // Si es PDF, cambiar la acción del formulario
+    if (fmt === 'pdf') {
+        e.preventDefault();
+        const btnText = document.getElementById('btnText');
+        btnText.innerHTML = '⏳ Generando PDF...';
+        
+        // Redirigir a la ruta de PDF
+        window.location.href = `{{ url_for('generate_pdf') }}?outname=${encodeURIComponent(outname)}`;
+        
+        // Restaurar texto después de un momento
+        setTimeout(() => {
+            btnText.innerHTML = '📥 Generar CV';
+        }, 2000);
+    } else {
+        // Para MD y TXT, continuar con el envío normal del formulario
+        const btnText = document.getElementById('btnText');
+        btnText.innerHTML = '⏳ Generando...';
+    }
+});
+
+// Cambiar el texto del botón según el formato seleccionado
+document.getElementById('fmt').addEventListener('change', function() {
+    const btnText = document.getElementById('btnText');
+    const fmt = this.value;
+    
+    if (fmt === 'pdf') {
+        btnText.innerHTML = '📕 Generar PDF';
+    } else if (fmt === 'md') {
+        btnText.innerHTML = '📝 Generar Markdown';
+    } else {
+        btnText.innerHTML = '📄 Generar Texto';
+    }
+});
+</script>
 {% endblock %}

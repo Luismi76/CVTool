@@ -95,9 +95,13 @@ class CVGeneratorApp:
         # Rutas de preview y generación
         self.app.add_url_rule('/preview', 'preview', self.preview)
         self.app.add_url_rule('/preview/personalizada', 'preview_custom', self.preview_custom, methods=['POST'])
-        self.app.add_url_rule('/generar', 'generate', self.generate, methods=['GET', 'POST'])
-        self.app.add_url_rule('/generar/personalizado', 'generate_custom', self.generate_custom, methods=['POST'])
-        self.app.add_url_rule('/download/<path:path>', 'download', self.download)
+        # self.app.add_url_rule('/generar', 'generate', self.generate, methods=['GET', 'POST'])
+        self.app.add_url_rule('/generar/pdf', 'generate_pdf', self.generate_pdf, methods=['GET', 'POST'])
+        # self.app.add_url_rule('/generar/personalizado', 'generate_custom', self.generate_custom, methods=['POST'])
+        def generate(self):
+            """Redirige a personalizar"""
+            return redirect(url_for('customize'))
+            self.app.add_url_rule('/download/<path:path>', 'download', self.download)
         
         # Manejadores de errores
         self.app.errorhandler(404)(self.not_found)
@@ -107,8 +111,12 @@ class CVGeneratorApp:
     
     def index(self):
         """Página principal"""
+            # DEBUG: Ver qué archivo está leyendo
+        print(f"🔍 DEBUG: Leyendo CV desde: {self.config.CV_FILE}")
+        print(f"🔍 DEBUG: Archivo existe: {self.config.CV_FILE.exists()}")
         try:
             cv = self.data_handler.load_cv()
+            print(f"🔍 DEBUG: Número de experiencias cargadas: {len(cv.get('experience', []))}")
             return render_template("index.html", cv=cv, title="Inicio")
         except Exception as e:
             logger.error(f"Error en index: {e}")
@@ -603,6 +611,58 @@ class CVGeneratorApp:
             outputs=outputs, 
             title="Generar"
         )
+    def generate_pdf(self):
+        """Genera el CV en formato PDF"""
+        from xhtml2pdf import pisa
+        from io import BytesIO
+        from flask import send_file
+        
+        try:
+            cv = self.data_handler.load_cv()
+            cv = self.data_handler.dedup_otros(cv)
+            
+            # Procesar selección si existe
+            selection_data = request.args.get("selection_data") or request.form.get("selection_data")
+            if selection_data:
+                try:
+                    import json
+                    selection = json.loads(selection_data)
+                    cv = self._filter_cv_by_selection(cv, selection)
+                except:
+                    pass
+            
+            # Renderizar HTML para PDF
+            html_content = self._render_cv_html_for_pdf(cv)
+            
+            # Generar PDF
+            pdf_buffer = BytesIO()
+            pisa_status = pisa.CreatePDF(html_content, dest=pdf_buffer)
+            
+            if pisa_status.err:
+                flash('Error al generar el PDF', 'error')
+                return redirect(url_for('generate'))
+            
+            # Preparar descarga
+            pdf_buffer.seek(0)
+            outname = request.args.get("outname", "CV").strip() or "CV"
+            
+            logger.info(f"PDF generado: {outname}.pdf")
+            
+            return send_file(
+                pdf_buffer,
+                mimetype='application/pdf',
+                as_attachment=True,
+                download_name=f'{outname}.pdf'
+            )
+            
+        except Exception as e:
+            logger.error(f"Error al generar PDF: {e}")
+            flash('Error inesperado al generar el PDF', 'error')
+            return redirect(url_for('generate'))
+    
+    def _render_cv_html_for_pdf(self, cv):
+        """Renderiza el CV como HTML optimizado para PDF"""
+        return render_template('cv_pdf_template.j2', cv=cv)
     
     def generate_custom(self):
         """Genera CV con selección personalizada"""

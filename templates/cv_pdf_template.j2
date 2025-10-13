@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Calibri', 'Arial', sans-serif;
+            font-size: 10.5pt;
+            line-height: 1.4;
+            color: #000;
+        }
+        
+        /* Encabezado */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+        }
+        
+        .header h1 {
+            font-size: 20pt;
+            color: #000;
+            margin-bottom: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            border-bottom: 3pt solid #000;
+            padding-bottom: 8px;
+        }
+        
+        .header .title {
+            font-size: 12pt;
+            color: #333;
+            margin: 12px 0;
+            font-weight: 400;
+        }
+        
+        .contact-line {
+            font-size: 10pt;
+            color: #333;
+            margin: 8px 0;
+        }
+        
+        /* Resumen */
+        .summary {
+            padding: 15px 0;
+            margin-bottom: 20px;
+            text-align: justify;
+            line-height: 1.6;
+        }
+        
+        /* Títulos de sección - DESTACADOS */
+        h2 {
+            font-size: 13pt;
+            color: #000;
+            margin-top: 22px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: #f0f0f0;
+            padding: 6px 10px;
+        }
+        
+        /* Items */
+        .item {
+            margin-bottom: 16px;
+            page-break-inside: avoid;
+        }
+        
+        .item-title {
+            font-size: 11pt;
+            color: #000;
+            font-weight: 700;
+        }
+        
+        .item-subtitle {
+            font-size: 10pt;
+            color: #444;
+            font-weight: 400;
+            margin-top: 2px;
+        }
+        
+        .item-date {
+            color: #666;
+            font-size: 9pt;
+            font-style: italic;
+            margin-top: 2px;
+            margin-bottom: 6px;
+        }
+        
+        .item-description {
+            margin-top: 6px;
+            text-align: justify;
+            line-height: 1.5;
+        }
+        
+        /* Tecnologías */
+        .tech-section {
+            margin-top: 6px;
+            font-size: 9pt;
+            color: #555;
+        }
+        
+        .tech-label {
+            font-weight: 600;
+            display: inline;
+        }
+        
+        /* Habilidades - Tabla de 2 columnas */
+        .skills-table {
+            width: 100%;
+            margin-top: 8px;
+            border-collapse: collapse;
+        }
+        
+        .skills-table td {
+            width: 50%;
+            padding: 4px 10px 4px 0;
+            vertical-align: top;
+        }
+        
+        .skill-name {
+            font-weight: 600;
+            color: #000;
+            font-size: 10pt;
+        }
+        
+        .skill-level {
+            color: #666;
+            font-size: 8.5pt;
+            font-style: italic;
+        }
+        
+        /* Educación */
+        .edu-item {
+            margin-bottom: 14px;
+        }
+        
+        /* Cursos */
+        .course-item {
+            margin-bottom: 12px;
+        }
+        
+        /* Información adicional */
+        .otros-item {
+            margin-bottom: 14px;
+        }
+    </style>
+</head>
+<body>
+    <!-- ENCABEZADO -->
+    <div class="header">
+        <h1>{{ cv.contact.name|default('') }}</h1>
+        {% if cv.contact.title %}
+        <div class="title">{{ cv.contact.title }}</div>
+        {% endif %}
+        <div class="contact-line">
+            {% if cv.contact.location %}{{ cv.contact.location }}{% endif %}
+            {% if cv.contact.location and (cv.contact.email or cv.contact.phone) %} • {% endif %}
+            {% if cv.contact.email %}{{ cv.contact.email }}{% endif %}
+            {% if cv.contact.email and cv.contact.phone %} • {% endif %}
+            {% if cv.contact.phone %}{{ cv.contact.phone }}{% endif %}
+        </div>
+        {% if cv.contact.links %}
+        <div class="contact-line">
+            {% for link in cv.contact.links %}
+            {{ link }}{% if not loop.last %} • {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- RESUMEN PROFESIONAL -->
+    {% if cv.summary %}
+    <div class="summary">
+        {{ cv.summary }}
+    </div>
+    {% endif %}
+    
+    <!-- HABILIDADES CLAVE -->
+    {% if cv.skills %}
+    <h2>Habilidades Clave</h2>
+    <table class="skills-table">
+        {% for i in range(0, cv.skills|length, 2) %}
+        <tr>
+            <td>
+                <span class="skill-name">{{ cv.skills[i].name }}</span>
+                {% if cv.skills[i].level %}
+                <span class="skill-level">({{ cv.skills[i].level }})</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if i + 1 < cv.skills|length %}
+                <span class="skill-name">{{ cv.skills[i + 1].name }}</span>
+                {% if cv.skills[i + 1].level %}
+                <span class="skill-level">({{ cv.skills[i + 1].level }})</span>
+                {% endif %}
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+    
+    <!-- EXPERIENCIA PROFESIONAL -->
+    {% if cv.experience %}
+    <h2>Experiencia Profesional</h2>
+    {% for exp in cv.experience %}
+    <div class="item">
+        <div class="item-title">{{ exp.title|default('') }}</div>
+        <div class="item-subtitle">{{ exp.company|default('') }}{% if exp.location %}, {{ exp.location }}{% endif %}</div>
+        <div class="item-date">
+            {{ exp.start|default('') }}{% if exp.start and exp.end %} - {% endif %}{{ exp.end|default('Actualidad') }}
+        </div>
+        {% if exp.description %}
+        <div class="item-description">{{ exp.description }}</div>
+        {% endif %}
+        {% if exp.tech %}
+        <div class="tech-section">
+            <span class="tech-label">Tecnologías:</span>
+            {% if exp.tech is string %}
+                {{ exp.tech }}
+            {% elif exp.tech is iterable %}
+                {% for tech in exp.tech %}{{ tech }}{% if not loop.last %}, {% endif %}{% endfor %}
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+    {% endif %}
+    
+    <!-- FORMACIÓN ACADÉMICA -->
+    {% if cv.education %}
+    <h2>Formación Académica</h2>
+    {% for edu in cv.education %}
+    <div class="item edu-item">
+        <div class="item-title">{{ edu.degree }}</div>
+        <div class="item-subtitle">{{ edu.institution }}</div>
+        <div class="item-date">
+            {{ edu.start|default('') }}{% if edu.start and edu.end %} - {% endif %}{{ edu.end|default('') }}
+        </div>
+        {% if edu.notes or edu.description %}
+        <div class="item-description">{{ edu.notes|default(edu.description|default('')) }}</div>
+        {% endif %}
+    </div>
+    {% endfor %}
+    {% endif %}
+    
+    <!-- CURSOS Y CERTIFICACIONES -->
+    {% if cv.courses %}
+    <h2>Cursos y Certificaciones</h2>
+    {% for course in cv.courses %}
+    <div class="item course-item">
+        <div class="item-title">{{ course.name }}</div>
+        <div class="item-subtitle">{{ course.issuer|default(course.institution|default('')) }}</div>
+        <div class="item-date">
+            {{ course.date }}{% if course.hours %} • {{ course.hours }} horas{% endif %}
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+    
+<!-- INFORMACIÓN ADICIONAL -->
+    {% if cv.otros %}
+    <h2>Información Adicional</h2>
+    {% for item in cv.otros %}
+    <div class="item otros-item">
+        <div class="item-title">{{ item.title }}</div>
+        {% if item.institution %}
+        <div class="item-subtitle">{{ item.institution }}</div>
+        {% endif %}
+        {% if item.periodo %}
+        <div class="item-date">{{ item.periodo }}</div>
+        {% endif %}
+        {% if item.description %}
+        <div class="item-description">{{ item.description }}</div>
+        {% endif %}
+    </div>
+    {% if not loop.last %}
+    <div style="margin-bottom: 8px;"></div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+</body>
+</html>

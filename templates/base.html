@@ -56,13 +56,9 @@
             >🎯 Personalizar</a
           >
 
-          <div class="nav-dropdown">
-            <span class="nav-link dropdown-toggle">📄 Generar ▾</span>
-            <div class="dropdown-content">
-              <a href="{{ url_for('preview') }}">👁️ Vista Previa</a>
-              <a href="{{ url_for('generate') }}">📄 Generar CV</a>
-            </div>
-          </div>
+          <a href="{{ url_for('preview') }}" class="nav-link"
+            >👁️ Vista Previa</a
+          >
 
           <a href="{{ url_for('about') }}" class="nav-link">ℹ️ Acerca de</a>
         </div>
