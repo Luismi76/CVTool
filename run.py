@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Script de ejecución de CV Generator
-Modo simple para usuarios sin conocimientos técnicos
+Compatible con deployment en Render y desarrollo local
 """
 import os
 import sys
@@ -10,7 +10,7 @@ import threading
 import time
 
 def open_browser(url, delay=2):
-    """Abre el navegador después de un delay"""
+    """Abre el navegador después de un delay (solo en desarrollo local)"""
     time.sleep(delay)
     webbrowser.open(url)
     print(f"\n✅ Aplicación abierta en el navegador: {url}")
@@ -32,15 +32,26 @@ def main():
     except ImportError:
         print("   ℹ️  python-dotenv no instalado")
     
-    # Configurar entorno
+    # Configurar entorno - RENDER necesita 0.0.0.0
     env = os.environ.get('FLASK_ENV', 'development')
-    host = os.environ.get('HOST', '127.0.0.1')
+    
+    # Si estamos en Render, usar 0.0.0.0, sino localhost
+    is_render = os.environ.get('RENDER', False)
+    host = '0.0.0.0' if is_render else os.environ.get('HOST', '127.0.0.1')
     port = int(os.environ.get('PORT', 5000))
     
     print(f"   Entorno: {env}")
-    print(f"   URL: http://{host}:{port}")
-    print(f"\n💡 La aplicación se abrirá automáticamente en tu navegador")
-    print(f"   Si no se abre, accede manualmente a: http://{host}:{port}")
+    print(f"   Host: {host}")
+    print(f"   Puerto: {port}")
+    
+    # Solo mostrar y abrir navegador si NO estamos en Render
+    if not is_render:
+        print(f"   URL: http://127.0.0.1:{port}")
+        print(f"\n💡 La aplicación se abrirá automáticamente en tu navegador")
+        print(f"   Si no se abre, accede manualmente a: http://127.0.0.1:{port}")
+    else:
+        print(f"   Ejecutando en Render en puerto {port}")
+    
     print(f"\n⚠️  Para cerrar la aplicación, presiona Ctrl+C")
     print("=" * 60 + "\n")
     
@@ -51,21 +62,22 @@ def main():
         # Crear instancia
         app_instance = create_app(env)
         
-        # Abrir navegador en hilo separado
-        url = f"http://{host}:{port}"
-        browser_thread = threading.Thread(
-            target=open_browser, 
-            args=(url,), 
-            daemon=True
-        )
-        browser_thread.start()
+        # Abrir navegador solo en desarrollo local
+        if not is_render:
+            url = f"http://127.0.0.1:{port}"
+            browser_thread = threading.Thread(
+                target=open_browser, 
+                args=(url,), 
+                daemon=True
+            )
+            browser_thread.start()
         
         # Ejecutar aplicación
         app_instance.run(
             host=host,
             port=port,
-            debug=(env == 'development'),
-            use_reloader=False  # Desactivar recarga automática
+            debug=(env == 'development' and not is_render),
+            use_reloader=False
         )
         
     except KeyboardInterrupt:

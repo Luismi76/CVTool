@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: cvtool
+    runtime: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn app.main:app"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+```
+
+### 2. **Actualizar `requirements.txt`** - Agregar:
+```
+gunicorn==21.2.0
