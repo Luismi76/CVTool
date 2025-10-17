@@ -3,6 +3,9 @@
   publish = "dist"
 
 [build.environment]
-  PYTHON_VERSION = "3.11.9"
+  # Desactiva mise en el build de Netlify
+  MISE_SKIP = "1"
+
+  # Fija Node (y, por si algún script toca Python, fíltralo a una versión estable)
   NODE_VERSION   = "22.20.0"
-  MISE_SKIP      = "1"
+  PYTHON_VERSION = "3.11.9"
