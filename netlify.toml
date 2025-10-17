@@ -1,13 +1,14 @@
 [build]
-  # Ajusta estos valores a tu proyecto
   command = "npm run build"
   publish = "dist"
 
 [build.environment]
-  # Evita compilar extensiones: usa una versión con wheels disponibles
+  # Usa el Python de Netlify (con headers) y una versión Node estable
   PYTHON_VERSION = "3.11.9"
-  NODE_VERSION = "22.20.0"
+  NODE_VERSION   = "22.20.0"
 
-  # Opcional: pip más predecible y silencioso
-  PIP_DISABLE_PIP_VERSION_CHECK = "1"
-  PIP_NO_CACHE_DIR = "off"
+  # Evita que mise “imponga” su Python recortado
+  MISE_SKIP = "1"
+
+  # Pide a pip que use wheel para pycairo (evita compilar)
+  PIP_ONLY_BINARY = "pycairo"
