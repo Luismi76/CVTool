@@ -17,12 +17,18 @@ class Config:
     OUT_DIR = DATA_DIR / "output"
     TEMPLATES_DIR = BASE_DIR / "render_templates"
     
-    # Archivos de datos
-    CV_FILE = DATA_DIR / "cv.json"
+    # Archivos de plantillas (solo para ejemplos/demos, NO para datos de usuarios)
+    CV_TEMPLATE_FILE = DATA_DIR / "cv_template.json"  # Plantilla vacía
     TEMPLATES_FILE = DATA_DIR / "templates.json"
     
+    # NUEVO: Configuración de sesiones en memoria
+    USE_SESSION_STORAGE = os.environ.get("USE_SESSION_STORAGE", "True").lower() == "true"
+    SESSION_TYPE = 'filesystem'  # Para producción
+    SESSION_PERMANENT = False
+    PERMANENT_SESSION_LIFETIME = 3600  # 1 hora
+    
     # Configuración de Flask
-    SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key-change-in-production")
+    SECRET_KEY = os.environ.get("SECRET_KEY", os.urandom(24).hex())
     DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
     
     # Configuración de servidor
@@ -50,10 +56,39 @@ class Config:
     }
     
     @classmethod
+    def get_empty_cv(cls):
+        """Retorna un CV vacío"""
+        return {
+            "contact": {
+                "name": "",
+                "title": "",
+                "location": "",
+                "email": "",
+                "phone": "",
+                "links": []
+            },
+            "summary": "",
+            "skills": [],
+            "experience": [],
+            "projects": [],
+            "education": [],
+            "courses": [],
+            "otros": []
+        }
+    
+    @classmethod
     def init_app(cls):
         """Inicializa directorios necesarios"""
         cls.DATA_DIR.mkdir(parents=True, exist_ok=True)
         cls.OUT_DIR.mkdir(parents=True, exist_ok=True)
+        
+        # Crear plantilla vacía si no existe
+        if not cls.CV_TEMPLATE_FILE.exists():
+            import json
+            cls.CV_TEMPLATE_FILE.write_text(
+                json.dumps(cls.get_empty_cv(), indent=2, ensure_ascii=False),
+                encoding='utf-8'
+            )
 
 
 class DevelopmentConfig(Config):
@@ -64,6 +99,7 @@ class DevelopmentConfig(Config):
 class ProductionConfig(Config):
     """Configuración para producción"""
     DEBUG = False
+    USE_SESSION_STORAGE = True
 
 
 # Diccionario de configuraciones

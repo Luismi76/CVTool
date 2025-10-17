@@ -5,6 +5,8 @@ Versión optimizada siguiendo mejores prácticas
 import os
 import sys
 import logging
+import json
+from datetime import datetime
 from pathlib import Path
 from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
 from jinja2 import Environment, FileSystemLoader
@@ -43,7 +45,17 @@ class CVGeneratorApp:
         """Configura la aplicación Flask"""
         # Aplicar configuración
         self.app.config.from_object(self.config)
-        self.app.secret_key = self.config.SECRET_KEY 
+        self.app.secret_key = self.config.SECRET_KEY
+        
+        # Configurar sesiones
+        if self.config.USE_SESSION_STORAGE:
+            from flask_session import Session
+            self.app.config['SESSION_TYPE'] = 'filesystem'
+            self.app.config['SESSION_PERMANENT'] = False
+            self.app.config['SESSION_USE_SIGNER'] = True
+            self.app.config['SESSION_FILE_DIR'] = self.config.DATA_DIR / 'flask_session'
+            (self.config.DATA_DIR / 'flask_session').mkdir(exist_ok=True)
+            Session(self.app)
         
         # Inicializar directorios
         self.config.init_app()
@@ -65,8 +77,9 @@ class CVGeneratorApp:
     def setup_handlers(self):
         """Configura manejadores de datos"""
         self.data_handler = CVDataHandler(
-            self.config.CV_FILE,
-            self.config.TEMPLATES_FILE
+            self.config.CV_TEMPLATE_FILE,  # Cambio: usar template en lugar de cv_file
+            self.config.TEMPLATES_FILE,
+            use_session=self.config.USE_SESSION_STORAGE  # NUEVO: usar sesiones
         )
         self.contact_validator = ContactValidator()
     
@@ -75,6 +88,10 @@ class CVGeneratorApp:
         # Rutas principales
         self.app.add_url_rule('/', 'index', self.index)
         self.app.add_url_rule('/acerca', 'about', self.about)
+        # Rutas de gestión de datos del usuario
+        self.app.add_url_rule('/limpiar-cv', 'clear_cv', self.clear_cv, methods=['POST'])
+        self.app.add_url_rule('/importar-cv', 'import_cv', self.import_cv, methods=['POST'])
+        self.app.add_url_rule('/exportar-cv', 'export_cv', self.export_cv, methods=['GET'])
         
         # Rutas de contacto y resumen
         self.app.add_url_rule('/contact', 'contact', self.contact, methods=['GET', 'POST'])
@@ -725,6 +742,92 @@ class CVGeneratorApp:
         logger.error(f"Error interno: {error}")
         return render_template('500.html'), 500
     
+        # ===== GESTIÓN DE DATOS DEL USUARIO =====
+
+    def clear_cv(self):
+        """Limpia todos los datos del CV del usuario actual"""
+        try:
+            if self.data_handler.clear_cv():
+                flash('Todos los datos han sido eliminados', 'success')
+                logger.info("CV limpiado por el usuario")
+            else:
+                flash('Error al limpiar los datos', 'error')
+        except Exception as e:
+            logger.error(f"Error al limpiar CV: {e}")
+            flash('Error inesperado', 'error')
+        
+        return redirect(url_for('index'))
+
+    def import_cv(self):
+        """Importa datos de CV desde un archivo JSON"""
+        from flask import request
+        
+        try:
+            if 'file' not in request.files:
+                return jsonify({"error": "No se encontró archivo"}), 400
+            
+            file = request.files['file']
+            
+            if file.filename == '':
+                return jsonify({"error": "Archivo vacío"}), 400
+            
+            if not file.filename.endswith('.json'):
+                return jsonify({"error": "Solo se permiten archivos .json"}), 400
+            
+            # Leer y validar JSON
+            content = file.read().decode('utf-8')
+            cv_data = json.loads(content)
+            
+            # Validar estructura básica
+            if not isinstance(cv_data, dict):
+                return jsonify({"error": "Formato de archivo inválido"}), 400
+            
+            # Guardar en sesión del usuario
+            if self.data_handler.save_cv(cv_data):
+                logger.info("CV importado correctamente")
+                return jsonify({
+                    "success": True,
+                    "message": "CV importado correctamente"
+                })
+            else:
+                return jsonify({"error": "Error al guardar los datos"}), 500
+            
+        except json.JSONDecodeError:
+            return jsonify({"error": "Archivo JSON inválido"}), 400
+        except Exception as e:
+            logger.error(f"Error al importar CV: {e}")
+            return jsonify({"error": "Error inesperado al importar"}), 500
+
+    def export_cv(self):
+        """Exporta los datos del CV actual como archivo JSON"""
+        from flask import send_file
+        from io import BytesIO
+        
+        try:
+            cv = self.data_handler.load_cv()
+            
+            # Crear archivo en memoria
+            json_data = json.dumps(cv, indent=2, ensure_ascii=False)
+            buffer = BytesIO(json_data.encode('utf-8'))
+            buffer.seek(0)
+            
+            # Nombre del archivo con timestamp
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"mi_cv_{timestamp}.json"
+            
+            logger.info("CV exportado")
+            
+            return send_file(
+                buffer,
+                mimetype='application/json',
+                as_attachment=True,
+                download_name=filename
+            )
+            
+        except Exception as e:
+            logger.error(f"Error al exportar CV: {e}")
+            flash('Error al exportar el CV', 'error')
+            return redirect(url_for('index'))
     # ===== MÉTODOS DE EJECUCIÓN =====
     
     def run(self, **kwargs):

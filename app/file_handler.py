@@ -1,11 +1,13 @@
 """
-Utilidades para manejo seguro de archivos JSON
+Utilidades para manejo de datos del CV
+Versión con soporte para sesiones en memoria (sin guardar datos de usuarios en servidor)
 """
 import json
 import logging
 from pathlib import Path
 from typing import Dict, Any, Optional
 from datetime import datetime
+from flask import session
 
 logger = logging.getLogger(__name__)
 
@@ -103,44 +105,20 @@ class FileHandler:
         except Exception as e:
             logger.warning(f"No se pudo crear backup: {e}")
             return file_path
-    
-    @staticmethod
-    def validate_json_structure(data: Dict[str, Any], schema: Dict[str, type]) -> bool:
-        """
-        Valida la estructura básica de un diccionario
-        
-        Args:
-            data: Datos a validar
-            schema: Esquema esperado {clave: tipo}
-            
-        Returns:
-            True si la estructura es válida
-        """
-        try:
-            for key, expected_type in schema.items():
-                if key not in data:
-                    logger.warning(f"Clave faltante en validación: {key}")
-                    return False
-                    
-                if not isinstance(data[key], expected_type):
-                    logger.warning(
-                        f"Tipo incorrecto para {key}: "
-                        f"esperado {expected_type}, obtenido {type(data[key])}"
-                    )
-                    return False
-            
-            return True
-            
-        except Exception as e:
-            logger.error(f"Error en validación: {e}")
-            return False
 
 
 class CVDataHandler:
-    """Maneja específicamente los datos del CV"""
+    """Maneja específicamente los datos del CV usando sesiones en memoria"""
     
     DEFAULT_CV_STRUCTURE = {
-        "contact": {"links": []},
+        "contact": {
+            "name": "",
+            "title": "",
+            "location": "",
+            "email": "",
+            "phone": "",
+            "links": []
+        },
         "summary": "",
         "skills": [],
         "experience": [],
@@ -150,28 +128,45 @@ class CVDataHandler:
         "otros": []
     }
     
-    def __init__(self, cv_file: Path, templates_file: Path):
+    def __init__(self, cv_file: Path, templates_file: Path, use_session: bool = True):
         """
         Inicializa el manejador de datos del CV
         
         Args:
-            cv_file: Ruta al archivo cv.json
+            cv_file: Ruta al archivo cv.json (solo para plantilla vacía)
             templates_file: Ruta al archivo templates.json
+            use_session: Si True, usa sesiones en memoria (recomendado para producción)
         """
         self.cv_file = cv_file
         self.templates_file = templates_file
         self.file_handler = FileHandler()
+        self.use_session = use_session
     
     def load_cv(self) -> Dict[str, Any]:
-        """Carga los datos del CV"""
-        return self.file_handler.read_json(
-            self.cv_file, 
-            default=self.DEFAULT_CV_STRUCTURE.copy()
-        )
+        """
+        Carga los datos del CV desde la sesión o retorna CV vacío
+        
+        Returns:
+            Datos del CV del usuario actual
+        """
+        if self.use_session:
+            # Cargar desde sesión (memoria)
+            if 'cv_data' not in session:
+                # Primera vez: inicializar con CV vacío
+                session['cv_data'] = self.DEFAULT_CV_STRUCTURE.copy()
+                logger.info("Nueva sesión iniciada con CV vacío")
+            
+            return session['cv_data']
+        else:
+            # Modo legacy: leer desde archivo (solo para desarrollo local)
+            return self.file_handler.read_json(
+                self.cv_file, 
+                default=self.DEFAULT_CV_STRUCTURE.copy()
+            )
     
     def save_cv(self, cv_data: Dict[str, Any]) -> bool:
         """
-        Guarda los datos del CV después de validar
+        Guarda los datos del CV en la sesión (memoria) o archivo
         
         Args:
             cv_data: Datos del CV a guardar
@@ -189,15 +184,47 @@ class CVDataHandler:
             if key not in cv_data:
                 cv_data[key] = self.DEFAULT_CV_STRUCTURE[key]
         
-        return self.file_handler.write_json(self.cv_file, cv_data)
+        if self.use_session:
+            # Guardar en sesión (memoria)
+            try:
+                session['cv_data'] = cv_data
+                session.modified = True
+                logger.debug("CV guardado en sesión (memoria)")
+                return True
+            except Exception as e:
+                logger.error(f"Error al guardar en sesión: {e}")
+                return False
+        else:
+            # Modo legacy: guardar en archivo
+            return self.file_handler.write_json(self.cv_file, cv_data)
+    
+    def clear_cv(self) -> bool:
+        """
+        Limpia los datos del CV del usuario actual
+        
+        Returns:
+            True si se limpió correctamente
+        """
+        if self.use_session:
+            try:
+                session['cv_data'] = self.DEFAULT_CV_STRUCTURE.copy()
+                session.modified = True
+                logger.info("CV limpiado de la sesión")
+                return True
+            except Exception as e:
+                logger.error(f"Error al limpiar sesión: {e}")
+                return False
+        else:
+            # En modo archivo, simplemente resetear
+            return self.save_cv(self.DEFAULT_CV_STRUCTURE.copy())
     
     def load_templates(self) -> Dict[str, Any]:
-        """Carga las plantillas guardadas"""
+        """Carga las plantillas guardadas (compartidas, no por usuario)"""
         return self.file_handler.read_json(self.templates_file, default={})
     
     def save_templates(self, templates_data: Dict[str, Any]) -> bool:
         """
-        Guarda las plantillas
+        Guarda las plantillas (compartidas)
         
         Args:
             templates_data: Plantillas a guardar

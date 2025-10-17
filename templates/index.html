@@ -4,6 +4,91 @@
 
 {% block extra_css %}
 <style>
+    .privacy-notice {
+        background: linear-gradient(135deg, #11998e, #38ef7d);
+        color: white;
+        padding: 20px 30px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);
+    }
+    
+    .privacy-notice h3 {
+        margin-bottom: 10px;
+        font-size: 1.3em;
+    }
+    
+    .privacy-notice p {
+        margin: 0;
+        opacity: 0.95;
+        font-size: 0.95em;
+    }
+
+    .data-management {
+        background: #f8f9fa;
+        padding: 30px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+    }
+    
+    .data-management h3 {
+        color: #2c3e50;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    .data-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+    }
+    
+    .data-btn {
+        padding: 15px 20px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    .data-btn-export {
+        background: #667eea;
+        color: white;
+    }
+    
+    .data-btn-export:hover {
+        background: #5568d3;
+        transform: translateY(-2px);
+    }
+    
+    .data-btn-import {
+        background: #38ef7d;
+        color: white;
+    }
+    
+    .data-btn-import:hover {
+        background: #2dd96f;
+        transform: translateY(-2px);
+    }
+    
+    .data-btn-clear {
+        background: #f56565;
+        color: white;
+    }
+    
+    .data-btn-clear:hover {
+        background: #e53e3e;
+        transform: translateY(-2px);
+    }
+
     .stats-section {
         background: #f8f9fa;
         padding: 30px;
@@ -152,6 +237,77 @@
         font-size: 0.9em;
     }
     
+    /* Estilos para el modal de confirmación */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+    }
+    
+    .modal-content {
+        background-color: white;
+        margin: 15% auto;
+        padding: 30px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    }
+    
+    .modal-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    .modal-header h3 {
+        color: #f56565;
+        margin-bottom: 10px;
+    }
+    
+    .modal-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 25px;
+    }
+    
+    .modal-btn {
+        padding: 12px 30px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .modal-btn-confirm {
+        background: #f56565;
+        color: white;
+    }
+    
+    .modal-btn-confirm:hover {
+        background: #e53e3e;
+    }
+    
+    .modal-btn-cancel {
+        background: #e2e8f0;
+        color: #2c3e50;
+    }
+    
+    .modal-btn-cancel:hover {
+        background: #cbd5e0;
+    }
+    
+    /* Input file personalizado */
+    #fileInput {
+        display: none;
+    }
+    
     @media (max-width: 768px) {
         .features-grid {
             grid-template-columns: 1fr;
@@ -160,6 +316,10 @@
         .btn-group {
             flex-direction: column;
             align-items: center;
+        }
+        
+        .data-actions {
+            grid-template-columns: 1fr;
         }
     }
 </style>
@@ -173,6 +333,32 @@
     </div>
     
     <div style="padding: 40px;">
+        <!-- Aviso de Privacidad -->
+        <div class="privacy-notice">
+            <h3>🔒 Tu privacidad es importante</h3>
+            <p>Tus datos se guardan solo en tu sesión y no se almacenan permanentemente en nuestros servidores. Puedes exportar tu CV en cualquier momento y volver a importarlo cuando lo necesites.</p>
+        </div>
+        
+        <!-- Gestión de Datos -->
+        <div class="data-management">
+            <h3>💾 Gestión de tus Datos</h3>
+            <div class="data-actions">
+                <a href="{{ url_for('export_cv') }}" class="data-btn data-btn-export">
+                    <span>📥</span>
+                    <span>Exportar CV</span>
+                </a>
+                <button onclick="document.getElementById('fileInput').click()" class="data-btn data-btn-import">
+                    <span>📤</span>
+                    <span>Importar CV</span>
+                </button>
+                <button onclick="showClearModal()" class="data-btn data-btn-clear">
+                    <span>🗑️</span>
+                    <span>Limpiar Datos</span>
+                </button>
+            </div>
+            <input type="file" id="fileInput" accept=".json" onchange="importCV(event)">
+        </div>
+        
         <!-- Estadísticas del CV actual -->
         <div class="stats-section">
             <h2 style="text-align: center; margin-bottom: 30px; color: #2c3e50;">📊 Tu CV Actual</h2>
@@ -303,6 +489,21 @@
         </div>
     </div>
 </div>
+
+<!-- Modal de confirmación para limpiar datos -->
+<div id="clearModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>⚠️ Confirmar acción</h3>
+            <p>¿Estás seguro de que quieres eliminar todos tus datos?</p>
+            <p style="color: #f56565; font-weight: 600; margin-top: 10px;">Esta acción no se puede deshacer.</p>
+        </div>
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-cancel" onclick="hideClearModal()">Cancelar</button>
+            <button class="modal-btn modal-btn-confirm" onclick="confirmClear()">Sí, eliminar todo</button>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
@@ -340,5 +541,62 @@
             }, 50);
         });
     });
+    
+    // Funciones para el modal de confirmación
+    function showClearModal() {
+        document.getElementById('clearModal').style.display = 'block';
+    }
+    
+    function hideClearModal() {
+        document.getElementById('clearModal').style.display = 'none';
+    }
+    
+    function confirmClear() {
+        // Crear formulario y enviar
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{{ url_for("clear_cv") }}';
+        document.body.appendChild(form);
+        form.submit();
+    }
+    
+    // Cerrar modal al hacer clic fuera
+    window.onclick = function(event) {
+        const modal = document.getElementById('clearModal');
+        if (event.target == modal) {
+            hideClearModal();
+        }
+    }
+    
+    // Función para importar CV
+    async function importCV(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        try {
+            const response = await fetch('{{ url_for("import_cv") }}', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                alert('✅ CV importado correctamente');
+                window.location.reload();
+            } else {
+                alert('❌ Error: ' + result.error);
+            }
+        } catch (error) {
+            alert('❌ Error al importar el archivo');
+            console.error(error);
+        }
+        
+        // Resetear input
+        event.target.value = '';
+    }
 </script>
 {% endblock %}

@@ -10,6 +10,7 @@ colorama==0.4.6
 cryptography==46.0.2
 cssselect2==0.8.0
 Flask==3.0.0
+Flask-Session==0.8.0
 freetype-py==2.5.1
 html5lib==1.1
 idna==3.11
