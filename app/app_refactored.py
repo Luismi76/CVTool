@@ -130,17 +130,14 @@ class CVGeneratorApp:
     
     def index(self):
         """Página principal"""
-            # DEBUG: Ver qué archivo está leyendo
-        print(f"🔍 DEBUG: Leyendo CV desde: {self.config.CV_FILE}")
-        print(f"🔍 DEBUG: Archivo existe: {self.config.CV_FILE.exists()}")
         try:
             cv = self.data_handler.load_cv()
-            print(f"🔍 DEBUG: Número de experiencias cargadas: {len(cv.get('experience', []))}")
+            logger.debug(f"CV cargado: {len(cv.get('experience', []))} experiencias")
             return render_template("index.html", cv=cv, title="Inicio")
         except Exception as e:
             logger.error(f"Error en index: {e}")
             flash("Error al cargar los datos", "error")
-            return render_template("index.html", cv={}, title="Inicio")
+            return render_template("index.html", cv=self.config.get_empty_cv(), title="Inicio")
     
     def about(self):
         """Página acerca de"""
