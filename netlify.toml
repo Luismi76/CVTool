@@ -1,14 +1,6 @@
 [build]
-  # ⚠️ Sustituye este comando por el que uses realmente para compilar tu proyecto
   command = "npm run build"
-  publish = "dist"  # Cambia "dist" si tu carpeta de salida se llama diferente
+  publish = "dist"
 
 [build.environment]
-  PYTHON_VERSION = "3.13"
-  NODE_VERSION = "20"
-  # Si usas pip directamente, puedes forzar también el upgrade
-  PIP_NO_CACHE_DIR = "off"
-  PIP_DISABLE_PIP_VERSION_CHECK = "1"
-
-[functions]
-  node_bundler = "esbuild"
+  NODE_VERSION = "22.20.0"   # LTS estable en octubre de 2025
