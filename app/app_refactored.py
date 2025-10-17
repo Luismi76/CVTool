@@ -47,18 +47,20 @@ class CVGeneratorApp:
         self.app.config.from_object(self.config)
         self.app.secret_key = self.config.SECRET_KEY
         
-        # Configurar sesiones
+        # Inicializar directorios PRIMERO
+        self.config.init_app()
+        
+        # Configurar sesiones DESPUÉS de crear directorios
         if self.config.USE_SESSION_STORAGE:
             from flask_session import Session
+            session_dir = self.config.DATA_DIR / 'flask_session'
+            session_dir.mkdir(parents=True, exist_ok=True)  # Crear directorio
+            
             self.app.config['SESSION_TYPE'] = 'filesystem'
             self.app.config['SESSION_PERMANENT'] = False
             self.app.config['SESSION_USE_SIGNER'] = True
-            self.app.config['SESSION_FILE_DIR'] = self.config.DATA_DIR / 'flask_session'
-            (self.config.DATA_DIR / 'flask_session').mkdir(exist_ok=True)
+            self.app.config['SESSION_FILE_DIR'] = str(session_dir)
             Session(self.app)
-        
-        # Inicializar directorios
-        self.config.init_app()
         
         # Configurar templates y static
         self.app.template_folder = str(self.config.BASE_DIR / "templates")
