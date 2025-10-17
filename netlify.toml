@@ -3,9 +3,13 @@
   publish = "dist"
 
 [build.environment]
-  # Usa el Python de Netlify (con headers) y evita el Python "stripped" de mise
-  PYTHON_VERSION = "3.11.9"
-  MISE_SKIP = "1"
+  # Usa Python de Netlify (con headers) y evita el de mise
+  PYTHON_VERSION   = "3.11.9"
+  MISE_SKIP        = "1"
 
-  # (Opcional pero recomendable) fija Node para evitar sorpresas
-  NODE_VERSION = "22.20.0"
+  # Fuerza a pip a usar ruedas binaras (nada de compilar pycairo)
+  PIP_ONLY_BINARY  = "pycairo"
+  PIP_PREFER_BINARY = "1"
+
+  # (opcional, pero recomendable para el resto del stack)
+  NODE_VERSION     = "22.20.0"
