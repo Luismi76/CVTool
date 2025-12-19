@@ -57,7 +57,7 @@ def main():
     
     try:
         # Importar la aplicación
-        from app.app_refactored import create_app
+        from app import create_app
         
         # Crear instancia
         app_instance = create_app(env)

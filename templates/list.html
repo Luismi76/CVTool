@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
     <div class="header">
-        <h1>📋 
+        <h1>📋
             {% if section == 'skills' %}Habilidades
             {% elif section == 'experience' %}Experiencia
             {% elif section == 'projects' %}Proyectos
@@ -13,7 +13,7 @@
             {% else %}{{ title }}
             {% endif %}
         </h1>
-        <p>Gestione su 
+        <p>Gestione su
             {% if section == 'skills' %}habilidades
             {% elif section == 'experience' %}experiencia laboral
             {% elif section == 'projects' %}proyectos
@@ -26,7 +26,7 @@
     </div>
     <div style="padding: 40px;">
         <div style="margin-bottom: 30px;">
-            <a href="{{ url_for('add_item', section=section) }}" class="btn btn-success">➕ Añadir 
+            <a href="{{ url_for('sections.add_item', section=section) }}" class="btn btn-success">➕ Añadir
                 {% if section == 'skills' %}Habilidad
                 {% elif section == 'experience' %}Experiencia
                 {% elif section == 'projects' %}Proyecto
@@ -42,52 +42,52 @@
             <!-- Título según sección -->
             <h3>
                 {% if section == 'skills' %}
-                    {{ item.name or 'Sin nombre' }}
+                {{ item.name or 'Sin nombre' }}
                 {% elif section in ['experience', 'projects'] %}
-                    {{ item.title or 'Sin título' }}
+                {{ item.title or 'Sin título' }}
                 {% elif section == 'education' %}
-                    {{ item.degree or 'Sin título' }}
+                {{ item.degree or 'Sin título' }}
                 {% elif section == 'courses' %}
-                    {{ item.name or 'Sin nombre' }}
+                {{ item.name or 'Sin nombre' }}
                 {% elif section == 'otros' %}
-                    {{ item.title or 'Sin título' }}
+                {{ item.title or 'Sin título' }}
                 {% else %}
-                    {{ item.name or item.title or 'Sin título' }}
+                {{ item.name or item.title or 'Sin título' }}
                 {% endif %}
             </h3>
-            
+
             <!-- Subtítulo según sección -->
             <p style="color: #666; margin-top: 8px;">
                 {% if section == 'skills' %}
-                    {% if item.level %}Nivel: {{ item.level }}{% endif %}
+                {% if item.level %}Nivel: {{ item.level }}{% endif %}
                 {% elif section in ['experience', 'projects'] %}
-                    {{ item.company or '' }}
-                    {% if item.location %} - {{ item.location }}{% endif %}
-                    {% if item.start or item.end %}
-                    <br><small style="color: #888;">
-                        {{ item.start or '' }}{% if item.start and item.end %} - {% endif %}{{ item.end or '' }}
-                    </small>
-                    {% endif %}
+                {{ item.company or '' }}
+                {% if item.location %} - {{ item.location }}{% endif %}
+                {% if item.start or item.end %}
+                <br><small style="color: #888;">
+                    {{ item.start or '' }}{% if item.start and item.end %} - {% endif %}{{ item.end or '' }}
+                </small>
+                {% endif %}
                 {% elif section == 'education' %}
-                    {{ item.institution or '' }}
-                    {% if item.start or item.end %}
-                    <br><small style="color: #888;">
-                        {{ item.start or '' }}{% if item.start and item.end %} - {% endif %}{{ item.end or '' }}
-                    </small>
-                    {% endif %}
+                {{ item.institution or '' }}
+                {% if item.start or item.end %}
+                <br><small style="color: #888;">
+                    {{ item.start or '' }}{% if item.start and item.end %} - {% endif %}{{ item.end or '' }}
+                </small>
+                {% endif %}
                 {% elif section == 'courses' %}
-                    {{ item.issuer or '' }}
-                    {% if item.date %}
-                    <br><small style="color: #888;">{{ item.date }}</small>
-                    {% endif %}
+                {{ item.issuer or '' }}
+                {% if item.date %}
+                <br><small style="color: #888;">{{ item.date }}</small>
+                {% endif %}
                 {% elif section == 'otros' %}
-                    {{ item.institution or '' }}
-                    {% if item.periodo %}
-                    <br><small style="color: #888;">{{ item.periodo }}</small>
-                    {% endif %}
+                {{ item.institution or '' }}
+                {% if item.periodo %}
+                <br><small style="color: #888;">{{ item.periodo }}</small>
+                {% endif %}
                 {% endif %}
             </p>
-            
+
             <!-- Descripción corta si existe -->
             {% if item.description and item.description|length > 100 %}
             <p style="margin-top: 10px; color: #555; font-size: 0.9em;">
@@ -98,17 +98,18 @@
                 {{ item.description }}
             </p>
             {% endif %}
-            
+
             <div style="margin-top: 15px;">
-                <a href="{{ url_for('edit_item', section=section, idx=index) }}" class="btn btn-secondary">✏️ Editar</a>
-                <a href="{{ url_for('delete_item', section=section, idx=index) }}" class="btn btn-danger" 
-                   onclick="return confirm('¿Está seguro de que desea eliminar este elemento?')">🗑️ Eliminar</a>
+                <a href="{{ url_for('sections.edit_item', section=section, idx=index) }}" class="btn btn-secondary">✏️
+                    Editar</a>
+                <a href="{{ url_for('sections.delete_item', section=section, idx=index) }}" class="btn btn-danger"
+                    onclick="return confirm('¿Está seguro de que desea eliminar este elemento?')">🗑️ Eliminar</a>
             </div>
         </div>
         {% endfor %}
         {% if not items %}
         <div style="text-align: center; padding: 40px; color: #6c757d;">
-            <p>No hay 
+            <p>No hay
                 {% if section == 'skills' %}habilidades configuradas
                 {% elif section == 'experience' %}experiencias configuradas
                 {% elif section == 'projects' %}proyectos configurados
@@ -118,7 +119,8 @@
                 {% else %}{{ section }} configurados
                 {% endif %}
             </p>
-            <a href="{{ url_for('add_item', section=section) }}" class="btn btn-primary">➕ Añadir el primero</a>
+            <a href="{{ url_for('sections.add_item', section=section) }}" class="btn btn-primary">➕ Añadir el
+                primero</a>
         </div>
         {% endif %}
     </div>

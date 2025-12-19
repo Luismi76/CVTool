@@ -3,326 +3,8 @@
 {% block title %}Inicio - CV Generator{% endblock %}
 
 {% block extra_css %}
-<style>
-    .privacy-notice {
-        background: linear-gradient(135deg, #11998e, #38ef7d);
-        color: white;
-        padding: 20px 30px;
-        border-radius: 12px;
-        margin-bottom: 30px;
-        box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);
-    }
-    
-    .privacy-notice h3 {
-        margin-bottom: 10px;
-        font-size: 1.3em;
-    }
-    
-    .privacy-notice p {
-        margin: 0;
-        opacity: 0.95;
-        font-size: 0.95em;
-    }
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
-    .data-management {
-        background: #f8f9fa;
-        padding: 30px;
-        border-radius: 12px;
-        margin-bottom: 30px;
-    }
-    
-    .data-management h3 {
-        color: #2c3e50;
-        margin-bottom: 20px;
-        text-align: center;
-    }
-    
-    .data-actions {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 15px;
-        margin-top: 20px;
-    }
-    
-    .data-btn {
-        padding: 15px 20px;
-        border: none;
-        border-radius: 8px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-align: center;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-    }
-    
-    .data-btn-export {
-        background: #667eea;
-        color: white;
-    }
-    
-    .data-btn-export:hover {
-        background: #5568d3;
-        transform: translateY(-2px);
-    }
-    
-    .data-btn-import {
-        background: #38ef7d;
-        color: white;
-    }
-    
-    .data-btn-import:hover {
-        background: #2dd96f;
-        transform: translateY(-2px);
-    }
-    
-    .data-btn-clear {
-        background: #f56565;
-        color: white;
-    }
-    
-    .data-btn-clear:hover {
-        background: #e53e3e;
-        transform: translateY(-2px);
-    }
-
-    .stats-section {
-        background: #f8f9fa;
-        padding: 30px;
-        border-radius: 12px;
-        margin-bottom: 30px;
-    }
-    
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 20px;
-        text-align: center;
-    }
-    
-    .stat-item {
-        padding: 20px;
-    }
-    
-    .stat-number {
-        font-size: 2.5em;
-        font-weight: 700;
-        color: #667eea;
-        margin-bottom: 5px;
-    }
-    
-    .stat-label {
-        color: #6c757d;
-        font-weight: 500;
-    }
-
-    .features-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 30px;
-        margin-bottom: 40px;
-    }
-    
-    .feature-card {
-        background: #f8f9fa;
-        border-radius: 12px;
-        padding: 30px;
-        text-align: center;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    
-    .feature-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    }
-    
-    .feature-card.highlight {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-    }
-    
-    .feature-icon {
-        font-size: 3em;
-        margin-bottom: 20px;
-    }
-    
-    .feature-title {
-        font-size: 1.4em;
-        font-weight: 600;
-        margin-bottom: 15px;
-        color: #2c3e50;
-    }
-    
-    .feature-card.highlight .feature-title {
-        color: white;
-    }
-    
-    .feature-description {
-        color: #6c757d;
-        line-height: 1.6;
-        margin-bottom: 20px;
-    }
-    
-    .feature-card.highlight .feature-description {
-        color: rgba(255,255,255,0.9);
-    }
-
-    .cta-section {
-        text-align: center;
-        padding: 40px;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        border-radius: 12px;
-        color: white;
-        margin-bottom: 30px;
-    }
-    
-    .cta-title {
-        font-size: 2em;
-        margin-bottom: 15px;
-    }
-    
-    .cta-description {
-        font-size: 1.1em;
-        margin-bottom: 30px;
-        opacity: 0.9;
-    }
-    
-    .btn-group {
-        display: flex;
-        gap: 15px;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    .quick-guide {
-        margin-top: 40px;
-        padding: 30px;
-        background: #f8f9fa;
-        border-radius: 12px;
-    }
-
-    .quick-guide h3 {
-        color: #2c3e50;
-        margin-bottom: 20px;
-        text-align: center;
-    }
-
-    .guide-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 20px;
-    }
-
-    .guide-step {
-        text-align: center;
-        padding: 15px;
-    }
-
-    .guide-step-number {
-        font-size: 2em;
-        margin-bottom: 10px;
-    }
-
-    .guide-step h4 {
-        color: #2c3e50;
-        margin-bottom: 8px;
-    }
-
-    .guide-step p {
-        color: #6c757d;
-        font-size: 0.9em;
-    }
-    
-    /* Estilos para el modal de confirmación */
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0,0,0,0.5);
-    }
-    
-    .modal-content {
-        background-color: white;
-        margin: 15% auto;
-        padding: 30px;
-        border-radius: 12px;
-        width: 90%;
-        max-width: 500px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-    }
-    
-    .modal-header {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-    
-    .modal-header h3 {
-        color: #f56565;
-        margin-bottom: 10px;
-    }
-    
-    .modal-buttons {
-        display: flex;
-        gap: 15px;
-        justify-content: center;
-        margin-top: 25px;
-    }
-    
-    .modal-btn {
-        padding: 12px 30px;
-        border: none;
-        border-radius: 8px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-    
-    .modal-btn-confirm {
-        background: #f56565;
-        color: white;
-    }
-    
-    .modal-btn-confirm:hover {
-        background: #e53e3e;
-    }
-    
-    .modal-btn-cancel {
-        background: #e2e8f0;
-        color: #2c3e50;
-    }
-    
-    .modal-btn-cancel:hover {
-        background: #cbd5e0;
-    }
-    
-    /* Input file personalizado */
-    #fileInput {
-        display: none;
-    }
-    
-    @media (max-width: 768px) {
-        .features-grid {
-            grid-template-columns: 1fr;
-        }
-        
-        .btn-group {
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .data-actions {
-            grid-template-columns: 1fr;
-        }
-    }
-</style>
 {% endblock %}
 
 {% block content %}
@@ -331,19 +13,20 @@
         <h1>📄 Generador de CV</h1>
         <p>Crea currículums profesionales adaptados a cada oportunidad</p>
     </div>
-    
+
     <div style="padding: 40px;">
         <!-- Aviso de Privacidad -->
         <div class="privacy-notice">
             <h3>🔒 Tu privacidad es importante</h3>
-            <p>Tus datos se guardan solo en tu sesión y no se almacenan permanentemente en nuestros servidores. Puedes exportar tu CV en cualquier momento y volver a importarlo cuando lo necesites.</p>
+            <p>Tus datos se guardan solo en tu sesión y no se almacenan permanentemente en nuestros servidores. Puedes
+                exportar tu CV en cualquier momento y volver a importarlo cuando lo necesites.</p>
         </div>
-        
+
         <!-- Gestión de Datos -->
         <div class="data-management">
             <h3>💾 Gestión de tus Datos</h3>
             <div class="data-actions">
-                <a href="{{ url_for('export_cv') }}" class="data-btn data-btn-export">
+                <a href="{{ url_for('main.export_cv') }}" class="data-btn data-btn-export">
                     <span>📥</span>
                     <span>Exportar CV</span>
                 </a>
@@ -358,7 +41,7 @@
             </div>
             <input type="file" id="fileInput" accept=".json" onchange="importCV(event)">
         </div>
-        
+
         <!-- Estadísticas del CV actual -->
         <div class="stats-section">
             <h2 style="text-align: center; margin-bottom: 30px; color: #2c3e50;">📊 Tu CV Actual</h2>
@@ -385,7 +68,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Grid de funcionalidades -->
         <div class="features-grid">
             <!-- Nueva funcionalidad destacada -->
@@ -393,74 +76,81 @@
                 <div class="feature-icon">🎯</div>
                 <h3 class="feature-title">Personalización Inteligente</h3>
                 <p class="feature-description">
-                    ¡NUEVA FUNCIONALIDAD! Selecciona y ordena elementos específicos de tu CV para adaptarlo a cada oferta de trabajo. Guarda plantillas para diferentes tipos de puestos.
+                    ¡NUEVA FUNCIONALIDAD! Selecciona y ordena elementos específicos de tu CV para adaptarlo a cada
+                    oferta de trabajo. Guarda plantillas para diferentes tipos de puestos.
                 </p>
-                <a href="{{ url_for('customize') }}" class="btn btn-white">🚀 Personalizar CV</a>
+                <a href="{{ url_for('personalization.customize') }}" class="btn btn-white">🚀 Personalizar CV</a>
             </div>
-            
+
             <div class="feature-card">
                 <div class="feature-icon">📝</div>
                 <h3 class="feature-title">Gestión Completa</h3>
                 <p class="feature-description">
-                    Administra toda tu información profesional: contacto, experiencia, habilidades, proyectos, educación y cursos en un solo lugar.
+                    Administra toda tu información profesional: contacto, experiencia, habilidades, proyectos, educación
+                    y cursos en un solo lugar.
                 </p>
-                <a href="{{ url_for('contact') }}" class="btn">✏️ Editar Datos</a>
+                <a href="{{ url_for('main.contact') }}" class="btn">✏️ Editar Datos</a>
             </div>
-            
+
             <div class="feature-card">
                 <div class="feature-icon">👁️</div>
                 <h3 class="feature-title">Vista Previa</h3>
                 <p class="feature-description">
-                    Visualiza cómo se verá tu CV antes de generarlo. Previsualización en tiempo real en diferentes formatos.
+                    Visualiza cómo se verá tu CV antes de generarlo. Previsualización en tiempo real en diferentes
+                    formatos.
                 </p>
-                <a href="{{ url_for('preview') }}" class="btn">👀 Ver Preview</a>
+                <a href="{{ url_for('generator.preview') }}" class="btn">👀 Ver Preview</a>
             </div>
-            
+
             <div class="feature-card">
                 <div class="feature-icon">📄</div>
                 <h3 class="feature-title">Múltiples Formatos</h3>
                 <p class="feature-description">
-                    Genera tu CV en diferentes formatos: Markdown para GitHub, texto plano para ATS, y más opciones próximamente.
+                    Genera tu CV en diferentes formatos: Markdown para GitHub, texto plano para ATS, y más opciones
+                    próximamente.
                 </p>
-                <a href="{{ url_for('customize') }}" class="btn">🎯 Personalizar y Generar</a>
+                <a href="{{ url_for('personalization.customize') }}" class="btn">🎯 Personalizar y Generar</a>
             </div>
-            
+
             <div class="feature-card">
                 <div class="feature-icon">🔄</div>
                 <h3 class="feature-title">Plantillas Reutilizables</h3>
                 <p class="feature-description">
-                    Guarda configuraciones específicas para diferentes tipos de trabajos: Frontend, Backend, Marketing, etc.
+                    Guarda configuraciones específicas para diferentes tipos de trabajos: Frontend, Backend, Marketing,
+                    etc.
                 </p>
-                <a href="{{ url_for('customize') }}" class="btn">💾 Ver Plantillas</a>
+                <a href="{{ url_for('personalization.customize') }}" class="btn">💾 Ver Plantillas</a>
             </div>
-            
+
             <div class="feature-card">
                 <div class="feature-icon">⚡</div>
                 <h3 class="feature-title">Optimización ATS</h3>
                 <p class="feature-description">
-                    Adaptación automática para sistemas de seguimiento de candidatos. Mejora tus posibilidades de ser seleccionado.
+                    Adaptación automática para sistemas de seguimiento de candidatos. Mejora tus posibilidades de ser
+                    seleccionado.
                 </p>
-                <a href="{{ url_for('about') }}" class="btn">ℹ️ Más Info</a>
+                <a href="{{ url_for('main.about') }}" class="btn">ℹ️ Más Info</a>
             </div>
         </div>
-        
+
         <!-- Sección de llamada a la acción -->
         <div class="cta-section">
             <h2 class="cta-title">🚀 Comienza Ahora</h2>
             <p class="cta-description">
-                Crea CVs personalizados que destaquen en cada aplicación. Aumenta tus oportunidades de conseguir el trabajo que deseas.
+                Crea CVs personalizados que destaquen en cada aplicación. Aumenta tus oportunidades de conseguir el
+                trabajo que deseas.
             </p>
             <div class="btn-group">
                 {% if cv.contact.name %}
-                    <a href="{{ url_for('customize') }}" class="btn btn-white">🎯 Personalizar Mi CV</a>
-                    <a href="{{ url_for('preview') }}" class="btn btn-white">👁️ Ver Vista Previa</a>
+                <a href="{{ url_for('personalization.customize') }}" class="btn btn-white">🎯 Personalizar Mi CV</a>
+                <a href="{{ url_for('generator.preview') }}" class="btn btn-white">👁️ Ver Vista Previa</a>
                 {% else %}
-                    <a href="{{ url_for('contact') }}" class="btn btn-white">📧 Configurar Contacto</a>
-                    <a href="{{ url_for('summary') }}" class="btn btn-white">📝 Añadir Resumen</a>
+                <a href="{{ url_for('main.contact') }}" class="btn btn-white">📧 Configurar Contacto</a>
+                <a href="{{ url_for('main.summary') }}" class="btn btn-white">📝 Añadir Resumen</a>
                 {% endif %}
             </div>
         </div>
-        
+
         <!-- Guía rápida -->
         <div class="quick-guide">
             <h3>🗺️ Guía Rápida</h3>
@@ -509,25 +199,25 @@
 {% block extra_js %}
 <script>
     // Efecto de entrada suave para las tarjetas
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const cards = document.querySelectorAll('.feature-card');
         cards.forEach((card, index) => {
             card.style.opacity = '0';
             card.style.transform = 'translateY(30px)';
-            
+
             setTimeout(() => {
                 card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
                 card.style.opacity = '1';
                 card.style.transform = 'translateY(0)';
             }, index * 100);
         });
-        
+
         // Animación de contadores
         const counters = document.querySelectorAll('.stat-number');
         counters.forEach(counter => {
             const target = parseInt(counter.textContent);
             counter.textContent = '0';
-            
+
             let current = 0;
             const increment = target / 30;
             const timer = setInterval(() => {
@@ -541,49 +231,49 @@
             }, 50);
         });
     });
-    
+
     // Funciones para el modal de confirmación
     function showClearModal() {
         document.getElementById('clearModal').style.display = 'block';
     }
-    
+
     function hideClearModal() {
         document.getElementById('clearModal').style.display = 'none';
     }
-    
+
     function confirmClear() {
         // Crear formulario y enviar
         const form = document.createElement('form');
         form.method = 'POST';
-        form.action = '{{ url_for("clear_cv") }}';
+        form.action = '{{ url_for("main.clear_cv") }}';
         document.body.appendChild(form);
         form.submit();
     }
-    
+
     // Cerrar modal al hacer clic fuera
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         const modal = document.getElementById('clearModal');
         if (event.target == modal) {
             hideClearModal();
         }
     }
-    
+
     // Función para importar CV
     async function importCV(event) {
         const file = event.target.files[0];
         if (!file) return;
-        
+
         const formData = new FormData();
         formData.append('file', file);
-        
+
         try {
-            const response = await fetch('{{ url_for("import_cv") }}', {
+            const response = await fetch('{{ url_for("main.import_cv") }}', {
                 method: 'POST',
                 body: formData
             });
-            
+
             const result = await response.json();
-            
+
             if (result.success) {
                 alert('✅ CV importado correctamente');
                 window.location.reload();
@@ -594,7 +284,7 @@
             alert('❌ Error al importar el archivo');
             console.error(error);
         }
-        
+
         // Resetear input
         event.target.value = '';
     }

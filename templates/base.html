@@ -1,76 +1,54 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %}CV Generator{% endblock %}</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/style.css') }}"
-    />
-    <!-- Intro.js para tour guiado -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/introjs.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/tour.css') }}"
-    />
-    {% block extra_css %}{% endblock %}
-  </head>
-  <body>
-    <nav class="navbar">
-      <div class="nav-container">
-        <a href="{{ url_for('index') }}" class="nav-brand">📄 CV Generator</a>
-        <div class="nav-menu">
-          <a href="{{ url_for('index') }}" class="nav-link">🏠 Inicio</a>
-          <a href="{{ url_for('contact') }}" class="nav-link">📧 Contacto</a>
-          <a href="{{ url_for('summary') }}" class="nav-link">📝 Resumen</a>
 
-          <div class="nav-dropdown">
-            <span class="nav-link dropdown-toggle">📋 Secciones ▾</span>
-            <div class="dropdown-content">
-              <a href="{{ url_for('list_items', section='skills') }}"
-                >🎯 Habilidades</a
-              >
-              <a href="{{ url_for('list_items', section='experience') }}"
-                >💼 Experiencia</a
-              >
-              <a href="{{ url_for('list_items', section='projects') }}"
-                >🚀 Proyectos</a
-              >
-              <a href="{{ url_for('list_items', section='education') }}"
-                >🎓 Educación</a
-              >
-              <a href="{{ url_for('list_items', section='courses') }}"
-                >📚 Cursos</a
-              >
-              <a href="{{ url_for('list_items', section='otros') }}"
-                >📋 Otros</a
-              >
-            </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}CV Generator{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <!-- Intro.js para tour guiado -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/introjs.min.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/tour.css') }}" />
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="{{ url_for('main.index') }}" class="nav-brand">📄 CV Generator</a>
+      <div class="nav-menu">
+        <a href="{{ url_for('main.index') }}" class="nav-link">🏠 Inicio</a>
+        <a href="{{ url_for('main.contact') }}" class="nav-link">📧 Contacto</a>
+        <a href="{{ url_for('main.summary') }}" class="nav-link">📝 Resumen</a>
+
+        <div class="nav-dropdown">
+          <span class="nav-link dropdown-toggle">📋 Secciones ▾</span>
+          <div class="dropdown-content">
+            <a href="{{ url_for('sections.list_items', section='skills') }}">🎯 Habilidades</a>
+            <a href="{{ url_for('sections.list_items', section='experience') }}">💼 Experiencia</a>
+            <a href="{{ url_for('sections.list_items', section='projects') }}">🚀 Proyectos</a>
+            <a href="{{ url_for('sections.list_items', section='education') }}">🎓 Educación</a>
+            <a href="{{ url_for('sections.list_items', section='courses') }}">📚 Cursos</a>
+            <a href="{{ url_for('sections.list_items', section='otros') }}">📋 Otros</a>
           </div>
-
-          <a href="{{ url_for('customize') }}" class="nav-link highlight"
-            >🎯 Personalizar</a
-          >
-
-          <a href="{{ url_for('preview') }}" class="nav-link"
-            >👁️ Vista Previa</a
-          >
-
-          <a href="{{ url_for('about') }}" class="nav-link">ℹ️ Acerca de</a>
         </div>
+
+        <a href="{{ url_for('personalization.customize') }}" class="nav-link highlight">🎯 Personalizar</a>
+
+        <a href="{{ url_for('generator.preview') }}" class="nav-link">👁️ Vista Previa</a>
+
+        <a href="{{ url_for('main.about') }}" class="nav-link">ℹ️ Acerca de</a>
       </div>
-    </nav>
+    </div>
+  </nav>
 
-    <main>{% block content %}{% endblock %}</main>
+  <main>{% block content %}{% endblock %}</main>
 
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <!-- Intro.js JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/intro.min.js"></script>
-    <script src="{{ url_for('static', filename='js/tour.js') }}"></script>
-    {% block extra_js %}{% endblock %}
-  </body>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <!-- Intro.js JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/intro.min.js"></script>
+  <script src="{{ url_for('static', filename='js/tour.js') }}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+
 </html>
