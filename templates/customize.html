@@ -39,203 +39,219 @@
                 <div class="btn-group">
                     <button id="select-all-btn" class="btn btn-primary">✅ Todo</button>
                     <button id="clear-all-btn" class="btn btn-secondary">❌ Nada</button>
-                    <button id="preview-btn" class="btn btn-primary">👁️ Vista previa</button>
+                    <button id="preview-btn" class="btn btn-primary">👁️ Vista previa (PDF)</button>
+                    <button id="toggle-live-preview-btn" class="btn btn-primary" style="background: #e67e22;">⚡ Panel
+                        lateral</button>
                     <button id="generate-btn" class="btn btn-success">📄 Generar CV</button>
                 </div>
             </div>
         </div>
 
-        <div class="content-area">
-            <!-- Resumen -->
-            <div class="section-card" data-section="summary">
-                <div class="section-header">
-                    <h3>📝 Resumen Profesional</h3>
-                    <div class="section-toggle checked"></div>
-                </div>
-                <div class="section-content show">
-                    <p style="color: #6c757d; font-style: italic;">
-                        {% if cv.summary %}
-                        {% if cv.summary|length > 150 %}
-                        {{ cv.summary[:150] }}...
-                        {% else %}
-                        {{ cv.summary }}
-                        {% endif %}
-                        {% else %}
-                        No hay resumen configurado
-                        {% endif %}
-                    </p>
-                </div>
-            </div>
-
-            <!-- Habilidades -->
-            {% if cv.skills %}
-            <div class="section-card" data-section="skills">
-                <div class="section-header">
-                    <h3>🎯 Habilidades ({{ cv.skills|length }})</h3>
-                    <div class="section-toggle checked"></div>
-                </div>
-                <div class="section-content show">
-                    <div class="item-list" id="skills-list">
-                        {% for skill in cv.skills %}
-                        <div class="item selected" data-index="{{ loop.index0 }}">
-                            <div class="item-checkbox checked"></div>
-                            <div class="item-title">{{ skill.name }}</div>
-                            <div class="item-subtitle">Nivel: {{ skill.level or 'No especificado' }}</div>
-                            {% if skill.tags %}
-                            <div class="item-description">Tags: {{ skill.tags|join(', ') }}</div>
+        <!-- Wrapper para contenido y vista previa -->
+        <div class="content-area-wrapper">
+            <div class="content-area">
+                <!-- Resumen -->
+                <div class="section-card" data-section="summary">
+                    <div class="section-header">
+                        <h3>📝 Resumen Profesional</h3>
+                        <div class="section-toggle checked"></div>
+                    </div>
+                    <div class="section-content show">
+                        <p style="color: #6c757d; font-style: italic;">
+                            {% if cv.summary %}
+                            {% if cv.summary|length > 150 %}
+                            {{ cv.summary[:150] }}...
+                            {% else %}
+                            {{ cv.summary }}
                             {% endif %}
-                        </div>
-                        {% endfor %}
+                            {% else %}
+                            No hay resumen configurado
+                            {% endif %}
+                        </p>
                     </div>
                 </div>
-            </div>
-            {% endif %}
 
-            <!-- Experiencia -->
-            {% if cv.experience %}
-            <div class="section-card" data-section="experience">
-                <div class="section-header">
-                    <h3>💼 Experiencia ({{ cv.experience|length }})</h3>
-                    <div class="section-toggle checked"></div>
-                </div>
-                <div class="section-content show">
-                    <div class="item-list" id="experience-list">
-                        {% for exp in cv.experience %}
-                        <div class="item selected" data-index="{{ loop.index0 }}">
-                            <div class="item-checkbox checked"></div>
-                            <div class="item-title">{{ exp.title }}</div>
-                            <div class="item-subtitle">{{ exp.company }} - {{ exp.start }} a {{ exp.end }}</div>
-                            {% if exp.description %}
-                            <div class="item-description">
-                                {% if exp.description|length > 150 %}
-                                {{ exp.description[:150] }}...
-                                {% else %}
-                                {{ exp.description }}
+                <!-- Habilidades -->
+                {% if cv.skills %}
+                <div class="section-card" data-section="skills">
+                    <div class="section-header">
+                        <h3>🎯 Habilidades ({{ cv.skills|length }})</h3>
+                        <div class="section-toggle checked"></div>
+                    </div>
+                    <div class="section-content show">
+                        <div class="item-list" id="skills-list">
+                            {% for skill in cv.skills %}
+                            <div class="item selected" data-index="{{ loop.index0 }}">
+                                <div class="item-checkbox checked"></div>
+                                <div class="item-title">{{ skill.name }}</div>
+                                <div class="item-subtitle">Nivel: {{ skill.level or 'No especificado' }}</div>
+                                {% if skill.tags %}
+                                <div class="item-description">Tags: {{ skill.tags|join(', ') }}</div>
                                 {% endif %}
                             </div>
-                            {% endif %}
+                            {% endfor %}
                         </div>
-                        {% endfor %}
                     </div>
                 </div>
-            </div>
-            {% endif %}
+                {% endif %}
 
-            <!-- Proyectos -->
-            {% if cv.projects %}
-            <div class="section-card" data-section="projects">
-                <div class="section-header">
-                    <h3>🚀 Proyectos ({{ cv.projects|length }})</h3>
-                    <div class="section-toggle checked"></div>
-                </div>
-                <div class="section-content show">
-                    <div class="item-list" id="projects-list">
-                        {% for project in cv.projects %}
-                        <div class="item selected" data-index="{{ loop.index0 }}">
-                            <div class="item-checkbox checked"></div>
-                            <div class="item-title">{{ project.title }}</div>
-                            <div class="item-subtitle">{{ project.company or 'Personal' }} - {{ project.start }} a {{
-                                project.end }}</div>
-                            {% if project.description %}
-                            <div class="item-description">
-                                {% if project.description|length > 150 %}
-                                {{ project.description[:150] }}...
-                                {% else %}
-                                {{ project.description }}
+                <!-- Experiencia -->
+                {% if cv.experience %}
+                <div class="section-card" data-section="experience">
+                    <div class="section-header">
+                        <h3>💼 Experiencia ({{ cv.experience|length }})</h3>
+                        <div class="section-toggle checked"></div>
+                    </div>
+                    <div class="section-content show">
+                        <div class="item-list" id="experience-list">
+                            {% for exp in cv.experience %}
+                            <div class="item selected" data-index="{{ loop.index0 }}">
+                                <div class="item-checkbox checked"></div>
+                                <div class="item-title">{{ exp.title }}</div>
+                                <div class="item-subtitle">{{ exp.company }} - {{ exp.start }} a {{ exp.end }}</div>
+                                {% if exp.description %}
+                                <div class="item-description">
+                                    {% if exp.description|length > 150 %}
+                                    {{ exp.description[:150] }}...
+                                    {% else %}
+                                    {{ exp.description }}
+                                    {% endif %}
+                                </div>
                                 {% endif %}
                             </div>
-                            {% endif %}
+                            {% endfor %}
                         </div>
-                        {% endfor %}
                     </div>
                 </div>
-            </div>
-            {% endif %}
+                {% endif %}
 
-            <!-- Educación -->
-            {% if cv.education %}
-            <div class="section-card" data-section="education">
-                <div class="section-header">
-                    <h3>🎓 Educación ({{ cv.education|length }})</h3>
-                    <div class="section-toggle checked"></div>
-                </div>
-                <div class="section-content show">
-                    <div class="item-list" id="education-list">
-                        {% for edu in cv.education %}
-                        <div class="item selected" data-index="{{ loop.index0 }}">
-                            <div class="item-checkbox checked"></div>
-                            <div class="item-title">{{ edu.degree }}</div>
-                            <div class="item-subtitle">{{ edu.institution }} - {{ edu.start }} a {{ edu.end }}</div>
-                            {% if edu.notes %}
-                            <div class="item-description">
-                                {% if edu.notes|length > 150 %}
-                                {{ edu.notes[:150] }}...
-                                {% else %}
-                                {{ edu.notes }}
+                <!-- Proyectos -->
+                {% if cv.projects %}
+                <div class="section-card" data-section="projects">
+                    <div class="section-header">
+                        <h3>🚀 Proyectos ({{ cv.projects|length }})</h3>
+                        <div class="section-toggle checked"></div>
+                    </div>
+                    <div class="section-content show">
+                        <div class="item-list" id="projects-list">
+                            {% for project in cv.projects %}
+                            <div class="item selected" data-index="{{ loop.index0 }}">
+                                <div class="item-checkbox checked"></div>
+                                <div class="item-title">{{ project.title }}</div>
+                                <div class="item-subtitle">{{ project.company or 'Personal' }} - {{ project.start }} a
+                                    {{
+                                    project.end }}</div>
+                                {% if project.description %}
+                                <div class="item-description">
+                                    {% if project.description|length > 150 %}
+                                    {{ project.description[:150] }}...
+                                    {% else %}
+                                    {{ project.description }}
+                                    {% endif %}
+                                </div>
                                 {% endif %}
                             </div>
-                            {% endif %}
+                            {% endfor %}
                         </div>
-                        {% endfor %}
                     </div>
                 </div>
-            </div>
-            {% endif %}
+                {% endif %}
 
-            <!-- Cursos -->
-            {% if cv.courses %}
-            <div class="section-card" data-section="courses">
-                <div class="section-header">
-                    <h3>📚 Cursos ({{ cv.courses|length }})</h3>
-                    <div class="section-toggle checked"></div>
-                </div>
-                <div class="section-content show">
-                    <div class="item-list" id="courses-list">
-                        {% for course in cv.courses %}
-                        <div class="item selected" data-index="{{ loop.index0 }}">
-                            <div class="item-checkbox checked"></div>
-                            <div class="item-title">{{ course.name }}</div>
-                            <div class="item-subtitle">{{ course.issuer }} - {{ course.date }}</div>
-                            {% if course.hours %}
-                            <div class="item-description">{{ course.hours }} horas</div>
-                            {% endif %}
-                        </div>
-                        {% endfor %}
+                <!-- Educación -->
+                {% if cv.education %}
+                <div class="section-card" data-section="education">
+                    <div class="section-header">
+                        <h3>🎓 Educación ({{ cv.education|length }})</h3>
+                        <div class="section-toggle checked"></div>
                     </div>
-                </div>
-            </div>
-            {% endif %}
-
-            <!-- Otros -->
-            {% if cv.otros %}
-            <div class="section-card" data-section="otros">
-                <div class="section-header">
-                    <h3>📋 Otros ({{ cv.otros|length }})</h3>
-                    <div class="section-toggle checked"></div>
-                </div>
-                <div class="section-content show">
-                    <div class="item-list" id="otros-list">
-                        {% for otro in cv.otros %}
-                        <div class="item selected" data-index="{{ loop.index0 }}">
-                            <div class="item-checkbox checked"></div>
-                            <div class="item-title">{{ otro.title }}</div>
-                            <div class="item-subtitle">{{ otro.institution or 'No especificado' }} - {{ otro.start or
-                                otro.periodo or 'Fecha no especificada' }}</div>
-                            {% if otro.description %}
-                            <div class="item-description">
-                                {% if otro.description|length > 150 %}
-                                {{ otro.description[:150] }}...
-                                {% else %}
-                                {{ otro.description }}
+                    <div class="section-content show">
+                        <div class="item-list" id="education-list">
+                            {% for edu in cv.education %}
+                            <div class="item selected" data-index="{{ loop.index0 }}">
+                                <div class="item-checkbox checked"></div>
+                                <div class="item-title">{{ edu.degree }}</div>
+                                <div class="item-subtitle">{{ edu.institution }} - {{ edu.start }} a {{ edu.end }}</div>
+                                {% if edu.notes %}
+                                <div class="item-description">
+                                    {% if edu.notes|length > 150 %}
+                                    {{ edu.notes[:150] }}...
+                                    {% else %}
+                                    {{ edu.notes }}
+                                    {% endif %}
+                                </div>
                                 {% endif %}
                             </div>
-                            {% endif %}
+                            {% endfor %}
                         </div>
-                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Cursos -->
+                {% if cv.courses %}
+                <div class="section-card" data-section="courses">
+                    <div class="section-header">
+                        <h3>📚 Cursos ({{ cv.courses|length }})</h3>
+                        <div class="section-toggle checked"></div>
+                    </div>
+                    <div class="section-content show">
+                        <div class="item-list" id="courses-list">
+                            {% for course in cv.courses %}
+                            <div class="item selected" data-index="{{ loop.index0 }}">
+                                <div class="item-checkbox checked"></div>
+                                <div class="item-title">{{ course.name }}</div>
+                                <div class="item-subtitle">{{ course.issuer }} - {{ course.date }}</div>
+                                {% if course.hours %}
+                                <div class="item-description">{{ course.hours }} horas</div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Otros -->
+                {% if cv.otros %}
+                <div class="section-card" data-section="otros">
+                    <div class="section-header">
+                        <h3>📋 Otros ({{ cv.otros|length }})</h3>
+                        <div class="section-toggle checked"></div>
+                    </div>
+                    <div class="section-content show">
+                        <div class="item-list" id="otros-list">
+                            {% for otro in cv.otros %}
+                            <div class="item selected" data-index="{{ loop.index0 }}">
+                                <div class="item-checkbox checked"></div>
+                                <div class="item-title">{{ otro.title }}</div>
+                                <div class="item-subtitle">{{ otro.institution or 'No especificado' }} - {{ otro.start
+                                    or
+                                    otro.periodo or 'Fecha no especificada' }}</div>
+                                {% if otro.description %}
+                                <div class="item-description">
+                                    {% if otro.description|length > 150 %}
+                                    {{ otro.description[:150] }}...
+                                    {% else %}
+                                    {{ otro.description }}
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Contenedor Vista Previa en Tiempo Real -->
+            <div class="live-preview-container" id="live-preview">
+                <div class="preview-paper" id="live-preview-content">
+                    <div style="text-align: center; color: #666; margin-top: 50%;">
+                        <p> Cargando vista previa...</p>
                     </div>
                 </div>
             </div>
-            {% endif %}
         </div>
     </div>
 </div>
@@ -299,6 +315,16 @@
                 <option value="txt">📄 Texto plano (.txt)</option>
             </select>
         </div>
+
+        <!-- Nuevo selector de diseño (Solo visible para PDF) -->
+        <div class="form-group" id="design-group">
+            <label for="pdf-design">Diseño (Solo PDF):</label>
+            <select id="pdf-design" class="form-control">
+                <option value="classic">👔 Clásico (Estándar)</option>
+                <option value="modern">🚀 Moderno (Dos columnas)</option>
+                <option value="minimal">🍃 Minimalista (Limpio)</option>
+            </select>
+        </div>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0; font-size: 0.9em;">
             <strong>ℹ️ Información sobre formatos:</strong>
             <ul style="margin: 10px 0 0 20px; line-height: 1.6;">
@@ -331,8 +357,17 @@
             };
 
             this.initializeSelection();
+            this.livePreviewActive = false;
+            this.previewDebounceTimer = null;
+            this.initializeSelection();
             this.setupEventListeners();
             this.setupSortable();
+
+            // Si es escritorio, abrir preview por defecto
+            if (window.innerWidth > 992) {
+                this.toggleLivePreview();
+            }
+
             console.log('🎯 CVCustomizer inicializado correctamente');
         }
 
@@ -347,6 +382,8 @@
                     order: Array.from(items, (_, index) => index)
                 };
             });
+            // Initial preview if active
+            if (this.livePreviewActive) this.triggerPreviewUpdate();
         }
 
         setupEventListeners() {
@@ -393,6 +430,7 @@
                             toggle.classList.add('checked');
                         }
                     }
+                    this.triggerPreviewUpdate();
                 });
             });
 
@@ -417,14 +455,27 @@
                     }
 
                     this.updateSectionToggle(section);
+                    this.triggerPreviewUpdate();
                 });
             });
 
             // Botones principales
-            document.getElementById('select-all-btn').addEventListener('click', () => this.selectAll());
-            document.getElementById('clear-all-btn').addEventListener('click', () => this.clearAll());
+            document.getElementById('select-all-btn').addEventListener('click', () => {
+                this.selectAll();
+                this.triggerPreviewUpdate();
+            });
+            document.getElementById('clear-all-btn').addEventListener('click', () => {
+                this.clearAll();
+                this.triggerPreviewUpdate();
+            });
             document.getElementById('preview-btn').addEventListener('click', () => this.showPreview());
             document.getElementById('generate-btn').addEventListener('click', () => this.showGenerateModal());
+
+            // Botón Toggle Live Preview
+            const togglePreviewBtn = document.getElementById('toggle-live-preview-btn');
+            if (togglePreviewBtn) {
+                togglePreviewBtn.addEventListener('click', () => this.toggleLivePreview());
+            }
 
             // Plantillas
             document.getElementById('load-template-btn').addEventListener('click', () => this.loadTemplate());
@@ -441,9 +492,61 @@
                     onEnd: (evt) => {
                         const section = evt.from.closest('.section-card').dataset.section;
                         this.updateOrder(section, evt.oldIndex, evt.newIndex);
+                        this.triggerPreviewUpdate();
                     }
                 });
             });
+        }
+
+        toggleLivePreview() {
+            this.livePreviewActive = !this.livePreviewActive;
+            const container = document.getElementById('live-preview');
+            const wrapper = document.querySelector('.content-area-wrapper');
+            const btn = document.getElementById('toggle-live-preview-btn');
+
+            if (this.livePreviewActive) {
+                container.classList.add('active');
+                wrapper.classList.add('preview-active');
+                btn.textContent = "⚡ Ocultar Panel";
+                this.triggerPreviewUpdate(true); // Force update
+            } else {
+                container.classList.remove('active');
+                wrapper.classList.remove('preview-active');
+                btn.textContent = "⚡ Panel lateral";
+            }
+        }
+
+        triggerPreviewUpdate(force = false) {
+            if (!this.livePreviewActive && !force) return;
+
+            if (this.previewDebounceTimer) clearTimeout(this.previewDebounceTimer);
+
+            this.previewDebounceTimer = setTimeout(() => {
+                this.updateLivePreviewContent();
+            }, 500);
+        }
+
+        async updateLivePreviewContent() {
+            const previewContent = document.getElementById('live-preview-content');
+
+            try {
+                const response = await fetch('/preview/fragment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        selection: this.selection
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.html) {
+                        previewContent.innerHTML = data.html;
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating preview:', error);
+            }
         }
 
         addToSelection(section, index) {
@@ -675,6 +778,18 @@
                 document.getElementById('preview-modal').style.display = 'none';
             });
 
+            // Mostrar/Ocultar selector de diseño según formato
+            const formatSelect = document.getElementById('output-format');
+            const designGroup = document.getElementById('design-group');
+
+            formatSelect.addEventListener('change', () => {
+                if (formatSelect.value === 'pdf') {
+                    designGroup.style.display = 'block';
+                } else {
+                    designGroup.style.display = 'none';
+                }
+            });
+
             // Modal de generar CV
             document.getElementById('confirm-generate-btn').addEventListener('click', async () => {
                 const name = document.getElementById('output-name').value.trim();
@@ -687,8 +802,9 @@
 
                 // Si es PDF, redirigir a la ruta de PDF con los datos
                 if (format === 'pdf') {
+                    const design = document.getElementById('pdf-design').value;
                     const selectionData = encodeURIComponent(JSON.stringify(this.selection));
-                    window.location.href = `/generar/pdf?outname=${encodeURIComponent(name)}&selection_data=${selectionData}`;
+                    window.location.href = `/generar/pdf?outname=${encodeURIComponent(name)}&selection_data=${selectionData}&design=${design}`;
                     this.showNotification('Generando PDF...', 'success');
                     document.getElementById('generate-modal').style.display = 'none';
                     return;

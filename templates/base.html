@@ -37,6 +37,15 @@
 
         <a href="{{ url_for('generator.preview') }}" class="nav-link">👁️ Vista Previa</a>
 
+        <div class="nav-dropdown">
+          <span class="nav-link dropdown-toggle">🎨 Tema ▾</span>
+          <div class="dropdown-content">
+            <a href="#" onclick="setTheme('default'); return false;">⚪ Default</a>
+            <a href="#" onclick="setTheme('corporate'); return false;">🏢 Corporativo</a>
+            <a href="#" onclick="setTheme('creative'); return false;">🎨 Creativo</a>
+          </div>
+        </div>
+
         <a href="{{ url_for('main.about') }}" class="nav-link">ℹ️ Acerca de</a>
       </div>
     </div>

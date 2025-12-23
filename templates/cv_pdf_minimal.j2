@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            size: A4;
+            margin: 2.5cm;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 11pt;
+            line-height: 1.5;
+            color: #222;
+        }
+        
+        /* Encabezado minimalista */
+        .header {
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 24pt;
+            font-weight: normal;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            color: #000;
+        }
+        
+        .contact-info {
+            font-size: 10pt;
+            color: #555;
+            margin-top: 5px;
+        }
+        
+        /* Resumen */
+        .summary {
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        /* Secciones */
+        h2 {
+            font-size: 12pt;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-weight: normal;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        
+        /* Items */
+        .item {
+            margin-bottom: 20px;
+        }
+        
+        .item-row {
+            display: flex; /* pisa no soporta flex bien, pero fallback block */
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+        
+        .item-title {
+            font-size: 11pt;
+            font-weight: bold;
+            color: #000;
+        }
+        
+        .item-subtitle {
+            font-style: italic;
+            color: #444;
+            margin-bottom: 4px;
+        }
+        
+        .item-date {
+            float: right;
+            font-weight: normal;
+            color: #666;
+            font-size: 10pt;
+        }
+        
+        .description {
+            color: #333;
+            text-align: justify;
+        }
+        
+        .tech {
+            margin-top: 5px;
+            font-size: 10pt;
+            color: #666;
+        }
+        
+        /* Habilidades como lista simple */
+        .skills-list {
+            margin-top: 10px;
+        }
+        
+        .skill-item {
+            display: inline-block;
+            margin-right: 15px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ cv.contact.name|default('') }}</h1>
+        <div class="contact-info">
+            {% if cv.contact.title %}{{ cv.contact.title }} <br>{% endif %}
+            {{ cv.contact.location }} 
+            {% if cv.contact.email %} | {{ cv.contact.email }}{% endif %}
+            {% if cv.contact.phone %} | {{ cv.contact.phone }}{% endif %}
+            {% if cv.contact.links %}
+                <br>
+                {% for link in cv.contact.links %}
+                {{ link }}{% if not loop.last %} — {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    
+    {% if cv.summary %}
+    <div class="summary">
+        {{ cv.summary }}
+    </div>
+    {% endif %}
+    
+    {% if cv.experience %}
+    <h2>Experiencia</h2>
+    {% for exp in cv.experience %}
+    <div class="item">
+        <div class="item-row">
+            <span class="item-title">{{ exp.title }}</span>
+            <span class="item-date">{{ exp.start|default('') }} – {{ exp.end|default('Actualidad') }}</span>
+        </div>
+        <div class="item-subtitle">{{ exp.company }}{% if exp.location %}, {{ exp.location }}{% endif %}</div>
+        
+        {% if exp.description %}
+        <div class="description">{{ exp.description }}</div>
+        {% endif %}
+    </div>
+    {% endfor %}
+    {% endif %}
+    
+    {% if cv.skills %}
+    <h2>Habilidades</h2>
+    <div class="skills-list">
+        {% for skill in cv.skills %}
+        <span class="skill-item">{{ skill.name }}{% if skill.level %} ({{ skill.level }}){% endif %}</span>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    {% if cv.education %}
+    <h2>Educación</h2>
+    {% for edu in cv.education %}
+    <div class="item">
+        <div class="item-row">
+            <span class="item-title">{{ edu.degree }}</span>
+            <span class="item-date">{{ edu.start|default('') }} – {{ edu.end|default('') }}</span>
+        </div>
+        <div class="item-subtitle">{{ edu.institution }}</div>
+    </div>
+    {% endfor %}
+    {% endif %}
+</body>
+</html>

@@ -1,9 +1,10 @@
 // JavaScript principal para CV Generator
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     console.log('🚀 CV Generator cargado correctamente');
-    
+
     // Inicializar componentes
     initializeNavigation();
+    initializeTheme();
     initializeAnimations();
     initializeNotifications();
     initializeFormValidation();
@@ -14,23 +15,23 @@ function initializeNavigation() {
     // Marcar enlace activo
     const currentPath = window.location.pathname;
     const navLinks = document.querySelectorAll('.nav-link[href]');
-    
+
     navLinks.forEach(link => {
         if (link.getAttribute('href') === currentPath) {
             link.style.background = '#f8f9fa';
             link.style.color = '#667eea';
         }
     });
-    
+
     // Navegación móvil mejorada
     const navContainer = document.querySelector('.nav-container');
     const navMenu = document.querySelector('.nav-menu');
-    
+
     // Crear botón de menú móvil si es necesario
     if (window.innerWidth <= 768) {
         createMobileMenu();
     }
-    
+
     // Redimensionar ventana
     window.addEventListener('resize', () => {
         if (window.innerWidth <= 768) {
@@ -50,7 +51,7 @@ function initializeNavigation() {
 function createMobileMenu() {
     const navContainer = document.querySelector('.nav-container');
     const navMenu = document.querySelector('.nav-menu');
-    
+
     // Crear botón toggle si no existe
     if (!document.querySelector('.nav-toggle')) {
         const toggleBtn = document.createElement('button');
@@ -64,20 +65,44 @@ function createMobileMenu() {
             cursor: pointer;
             padding: 5px;
         `;
-        
+
         navContainer.appendChild(toggleBtn);
-        
+
         // Toggle functionality
         toggleBtn.addEventListener('click', () => {
             const isVisible = navMenu.style.display === 'flex';
             navMenu.style.display = isVisible ? 'none' : 'flex';
             toggleBtn.innerHTML = isVisible ? '☰' : '✕';
         });
-        
+
         // Inicializar como oculto en móvil
         navMenu.style.display = 'none';
     }
 }
+
+// ===== TEMAS =====
+function initializeTheme() {
+    const savedTheme = localStorage.getItem('cv_theme') || 'default';
+    setTheme(savedTheme);
+}
+
+window.setTheme = function (themeName) {
+    // Limpiar clases de tema existentes
+    document.body.classList.remove('theme-corporate', 'theme-creative');
+
+    // Aplicar nuevo tema si no es default
+    if (themeName !== 'default') {
+        document.body.classList.add(`theme-${themeName}`);
+    }
+
+    // Guardar preferencia
+    localStorage.setItem('cv_theme', themeName);
+
+    // Notificar cambio (opcional)
+    if (typeof console !== 'undefined') {
+        console.log(`🎨 Tema cambiado a: ${themeName}`);
+    }
+};
 
 // ===== ANIMACIONES =====
 function initializeAnimations() {
@@ -86,12 +111,12 @@ function initializeAnimations() {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
     };
-    
+
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
-                
+
                 // Animación especial para contadores
                 if (entry.target.classList.contains('stat-number')) {
                     animateCounter(entry.target);
@@ -99,12 +124,12 @@ function initializeAnimations() {
             }
         });
     }, observerOptions);
-    
+
     // Observar elementos con animación
     document.querySelectorAll('.fade-in, .stat-number, .feature-card').forEach(el => {
         observer.observe(el);
     });
-    
+
     // Efecto de escritura para títulos
     const titleElements = document.querySelectorAll('[data-typewriter]');
     titleElements.forEach(el => {
@@ -117,9 +142,9 @@ function animateCounter(element) {
     const duration = 1500;
     const step = target / (duration / 16);
     let current = 0;
-    
+
     element.textContent = '0';
-    
+
     const timer = setInterval(() => {
         current += step;
         if (current >= target) {
@@ -134,7 +159,7 @@ function animateCounter(element) {
 function typeWriter(element, text, speed = 100) {
     element.textContent = '';
     let i = 0;
-    
+
     const timer = setInterval(() => {
         if (i < text.length) {
             element.textContent += text.charAt(i);
@@ -148,25 +173,25 @@ function typeWriter(element, text, speed = 100) {
 // ===== NOTIFICACIONES =====
 function initializeNotifications() {
     // Función global para mostrar notificaciones
-    window.showNotification = function(message, type = 'success', duration = 4000) {
+    window.showNotification = function (message, type = 'success', duration = 4000) {
         // Remover notificaciones existentes
         document.querySelectorAll('.notification').forEach(n => n.remove());
-        
+
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
-        
+
         // Crear contenido de la notificación
         const content = document.createElement('div');
         content.style.cssText = 'display: flex; align-items: center; gap: 10px;';
-        
+
         const icon = getNotificationIcon(type);
         const text = document.createElement('span');
         text.textContent = message;
-        
+
         content.appendChild(icon);
         content.appendChild(text);
         notification.appendChild(content);
-        
+
         // Añadir botón de cerrar
         const closeBtn = document.createElement('button');
         closeBtn.innerHTML = '✕';
@@ -183,26 +208,26 @@ function initializeNotifications() {
         closeBtn.addEventListener('click', () => removeNotification(notification));
         closeBtn.addEventListener('mouseenter', () => closeBtn.style.opacity = '1');
         closeBtn.addEventListener('mouseleave', () => closeBtn.style.opacity = '0.7');
-        
+
         content.appendChild(closeBtn);
-        
+
         document.body.appendChild(notification);
-        
+
         // Mostrar con animación
         setTimeout(() => notification.classList.add('show'), 100);
-        
+
         // Auto-ocultar
         setTimeout(() => removeNotification(notification), duration);
-        
+
         return notification;
     };
-    
+
     // Función auxiliar para iconos
     function getNotificationIcon(type) {
         const icon = document.createElement('span');
         icon.style.fontSize = '1.2em';
-        
-        switch(type) {
+
+        switch (type) {
             case 'success':
                 icon.textContent = '✅';
                 break;
@@ -218,10 +243,10 @@ function initializeNotifications() {
             default:
                 icon.textContent = '📢';
         }
-        
+
         return icon;
     }
-    
+
     function removeNotification(notification) {
         notification.classList.remove('show');
         setTimeout(() => {
@@ -236,12 +261,12 @@ function initializeNotifications() {
 function initializeFormValidation() {
     // Validación en tiempo real
     const inputs = document.querySelectorAll('input[required], textarea[required]');
-    
+
     inputs.forEach(input => {
         input.addEventListener('blur', () => validateField(input));
         input.addEventListener('input', () => clearFieldError(input));
     });
-    
+
     // Validación al enviar formularios
     const forms = document.querySelectorAll('form');
     forms.forEach(form => {
@@ -259,7 +284,7 @@ function validateField(field) {
     const fieldName = field.name || 'Campo';
     let isValid = true;
     let message = '';
-    
+
     // Validaciones básicas
     if (field.hasAttribute('required') && !value) {
         isValid = false;
@@ -274,7 +299,7 @@ function validateField(field) {
         isValid = false;
         message = `Mínimo ${field.minLength} caracteres`;
     }
-    
+
     showFieldValidation(field, isValid, message);
     return isValid;
 }
@@ -282,11 +307,11 @@ function validateField(field) {
 function showFieldValidation(field, isValid, message) {
     // Remover validación anterior
     clearFieldError(field);
-    
+
     if (!isValid) {
         field.style.borderColor = '#dc3545';
         field.style.boxShadow = '0 0 0 3px rgba(220, 53, 69, 0.1)';
-        
+
         const errorDiv = document.createElement('div');
         errorDiv.className = 'field-error';
         errorDiv.style.cssText = `
@@ -298,7 +323,7 @@ function showFieldValidation(field, isValid, message) {
             gap: 5px;
         `;
         errorDiv.innerHTML = `<span>⚠️</span> ${message}`;
-        
+
         field.parentNode.appendChild(errorDiv);
     } else if (field.value.trim()) {
         field.style.borderColor = '#28a745';
@@ -309,7 +334,7 @@ function showFieldValidation(field, isValid, message) {
 function clearFieldError(field) {
     field.style.borderColor = '#e9ecef';
     field.style.boxShadow = 'none';
-    
+
     const errorDiv = field.parentNode.querySelector('.field-error');
     if (errorDiv) {
         errorDiv.remove();
@@ -319,13 +344,13 @@ function clearFieldError(field) {
 function validateForm(form) {
     const requiredFields = form.querySelectorAll('input[required], textarea[required]');
     let isValid = true;
-    
+
     requiredFields.forEach(field => {
         if (!validateField(field)) {
             isValid = false;
         }
     });
-    
+
     return isValid;
 }
 
@@ -339,19 +364,19 @@ function isValidPhone(phone) {
 }
 
 // Función para loading states
-window.showLoading = function(element, text = 'Cargando...') {
+window.showLoading = function (element, text = 'Cargando...') {
     const original = element.innerHTML;
     element.innerHTML = `<span>⏳</span> ${text}`;
     element.disabled = true;
-    
-    return function() {
+
+    return function () {
         element.innerHTML = original;
         element.disabled = false;
     };
 };
 
 // Función para copiar al portapapeles
-window.copyToClipboard = function(text, successMessage = 'Copiado al portapapeles') {
+window.copyToClipboard = function (text, successMessage = 'Copiado al portapapeles') {
     navigator.clipboard.writeText(text).then(() => {
         showNotification(successMessage, 'success', 2000);
     }).catch(() => {

@@ -1,0 +1,12 @@
+2025-12-19 18:19:06,505 - app - INFO - Aplicaci¾n inicializada: testing
+2025-12-19 18:19:06,515 - app.file_handler - INFO - Nueva sesi¾n iniciada con CV vacÝo
+Sending POST request to /preview/fragment...
+Status Code: 200
+Success! HTML Length: 3423
+HTML Preview (first 200 chars):
+<style>
+    /* Estilos copiados y adaptados para el fragmento */
+    .preview-content-wrapper {
+        font-family: 'Calibri', 'Arial', sans-serif;
+        font-size: 10.5pt;
+        line-height: 1.4

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            size: A4;
+            margin: 0; 
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            font-size: 10pt;
+            line-height: 1.4;
+            color: #333;
+        }
+        
+        /* Layout de dos columnas con tabla (más fiable para pisa/xhtml2pdf) */
+        .main-table {
+            width: 100%;
+            height: 100%;
+            border-collapse: collapse;
+        }
+        
+        .left-column {
+            width: 33%;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 30px 20px;
+            vertical-align: top;
+        }
+        
+        .right-column {
+            width: 67%;
+            background-color: #ffffff;
+            padding: 30px 40px;
+            vertical-align: top;
+        }
+        
+        /* Estilos Columna Izquierda */
+        .profile-section {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .profile-name {
+            font-size: 18pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        
+        .profile-title {
+            font-size: 12pt;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        
+        .left-section {
+            margin-bottom: 25px;
+        }
+        
+        .left-header {
+            font-size: 11pt;
+            text-transform: uppercase;
+            border-bottom: 1px solid #7f8c8d;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        .contact-item {
+            font-size: 9pt;
+            margin-bottom: 8px;
+            word-wrap: break-word; /* Para emails largos */
+        }
+        
+        .skill-item {
+            margin-bottom: 8px;
+        }
+        
+        .skill-name {
+            font-weight: bold;
+            font-size: 9.5pt;
+        }
+        
+        .skill-level {
+            font-size: 8.5pt;
+            opacity: 0.8;
+        }
+
+        .skill-tag {
+            font-size: 8pt;
+            color: #bdc3c7;
+        }
+        
+        /* Estilos Columna Derecha */
+        .summary {
+            margin-bottom: 30px;
+            color: #555;
+            line-height: 1.6;
+            font-size: 10.5pt;
+        }
+        
+        .right-header {
+            font-size: 13pt;
+            text-transform: uppercase;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .exp-item {
+            margin-bottom: 25px;
+        }
+        
+        .exp-title {
+            font-size: 12pt;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .exp-company {
+            font-size: 11pt;
+            color: #3498db;
+            margin-bottom: 4px;
+        }
+        
+        .exp-date {
+            font-size: 9pt;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+        
+        .exp-desc {
+            font-size: 10pt;
+            text-align: justify;
+        }
+        
+        .tech-stack {
+            margin-top: 8px;
+            font-size: 9pt;
+            color: #666;
+            font-style: italic;
+        }
+
+        .edu-item {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <table class="main-table">
+        <tr>
+            <!-- COLUMNA IZQUIERDA -->
+            <td class="left-column">
+                <div class="profile-section">
+                    <div class="profile-name">{{ cv.contact.name|default('') }}</div>
+                    <div class="profile-title">{{ cv.contact.title|default('') }}</div>
+                </div>
+                
+                <div class="left-section">
+                    <div class="left-header">Contacto</div>
+                    {% if cv.contact.location %}
+                    <div class="contact-item">📍 {{ cv.contact.location }}</div>
+                    {% endif %}
+                    {% if cv.contact.email %}
+                    <div class="contact-item">✉️ {{ cv.contact.email }}</div>
+                    {% endif %}
+                    {% if cv.contact.phone %}
+                    <div class="contact-item">📱 {{ cv.contact.phone }}</div>
+                    {% endif %}
+                    {% if cv.contact.links %}
+                        {% for link in cv.contact.links %}
+                        <div class="contact-item">🔗 {{ link }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                
+                {% if cv.skills %}
+                <div class="left-section">
+                    <div class="left-header">Habilidades</div>
+                    {% for skill in cv.skills %}
+                    <div class="skill-item">
+                        <div class="skill-name">{{ skill.name }}</div>
+                        {% if skill.level %}
+                        <div class="skill-level">{{ skill.level }}</div>
+                        {% endif %}
+                        {% if skill.tags %}
+                        <div class="skill-tag">{{ skill.tags|join(', ') }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <!-- Cursos en columna izquierda para ahorrar espacio -->
+                {% if cv.courses %}
+                <div class="left-section">
+                    <div class="left-header">Cursos</div>
+                    {% for course in cv.courses %}
+                    <div class="skill-item">
+                        <div class="skill-name">{{ course.name }}</div>
+                        <div class="skill-level">{{ course.date }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </td>
+            
+            <!-- COLUMNA DERECHA -->
+            <td class="right-column">
+                {% if cv.summary %}
+                <div class="summary">
+                    {{ cv.summary }}
+                </div>
+                {% endif %}
+                
+                {% if cv.experience %}
+                <div class="right-header">Experiencia</div>
+                {% for exp in cv.experience %}
+                <div class="exp-item">
+                    <div class="exp-title">{{ exp.title }}</div>
+                    <div class="exp-company">{{ exp.company }}{% if exp.location %} | {{ exp.location }}{% endif %}</div>
+                    <div class="exp-date">{{ exp.start|default('') }} - {{ exp.end|default('Actualidad') }}</div>
+                    
+                    {% if exp.description %}
+                    <div class="exp-desc">{{ exp.description }}</div>
+                    {% endif %}
+                    
+                    {% if exp.tech %}
+                    <div class="tech-stack">
+                        Stack: {% if exp.tech is string %}{{ exp.tech }}{% else %}{{ exp.tech|join(', ') }}{% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                {% endif %}
+                
+                {% if cv.projects %}
+                <div class="right-header">Proyectos Destacados</div>
+                {% for proj in cv.projects %}
+                <div class="exp-item">
+                    <div class="exp-title">{{ proj.title }}</div>
+                    <div class="exp-date">{{ proj.start|default('') }} - {{ proj.end|default('') }}</div>
+                    <div class="exp-desc">{{ proj.description }}</div>
+                </div>
+                {% endfor %}
+                {% endif %}
+                
+                {% if cv.education %}
+                <div class="right-header">Educación</div>
+                {% for edu in cv.education %}
+                <div class="edu-item">
+                    <div class="exp-title">{{ edu.degree }}</div>
+                    <div class="exp-company">{{ edu.institution }}</div>
+                    <div class="exp-date">{{ edu.start|default('') }} - {{ edu.end|default('') }}</div>
+                </div>
+                {% endfor %}
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

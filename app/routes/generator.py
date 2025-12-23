@@ -40,9 +40,10 @@ def _render_to_text(cv, fmt="md"):
     template = current_app.jinja_env.get_template(template_name)
     return template.render(**cv)
 
-def _render_cv_html_for_pdf(cv):
+def _render_cv_html_for_pdf(cv, design="classic"):
     """Renderiza el CV como HTML optimizado para PDF"""
-    return render_template('cv_pdf_template.j2', cv=cv)
+    template_name = current_app.config_obj.PDF_TEMPLATES.get(design, "cv_pdf_classic.j2")
+    return render_template(template_name, cv=cv)
 
 @generator_bp.route('/preview')
 def preview():
@@ -60,6 +61,30 @@ def preview():
         logger.error(f"Error en preview: {e}")
         flash('Error al generar vista previa', 'error')
         return redirect(url_for('main.index'))
+
+@generator_bp.route('/preview/fragment', methods=['POST'])
+def preview_fragment():
+    """Retorna solo el HTML del CV para la vista previa en tiempo real"""
+    try:
+        data = request.get_json()
+        selection = data.get("selection", {})
+        
+        cv = current_app.data_handler.load_cv()
+        cv = current_app.data_handler.dedup_otros(cv)
+        
+        # Si se envían datos de selección, filtrar. Si no, usar todo.
+        if selection:
+             filtered_cv = _filter_cv_by_selection(cv, selection)
+             cv = filtered_cv
+
+        # Usamos el template de fragmento
+        content = render_template('cv_preview_fragment.j2', cv=cv)
+        
+        return jsonify({"html": content})
+        
+    except Exception as e:
+        logger.error(f"Error en preview_fragment: {e}")
+        return jsonify({"error": str(e)}), 500
 
 @generator_bp.route('/preview/personalizada', methods=['POST'])
 def preview_custom():
@@ -164,8 +189,11 @@ def generate_pdf():
             except:
                 pass
         
+        # Obtener diseño seleccionado
+        design = request.args.get("design") or request.form.get("design") or "classic"
+        
         # Renderizar HTML para PDF
-        html_content = _render_cv_html_for_pdf(cv)
+        html_content = _render_cv_html_for_pdf(cv, design)
         
         # Generar PDF
         pdf_buffer = BytesIO()
@@ -179,7 +207,7 @@ def generate_pdf():
         pdf_buffer.seek(0)
         outname = request.args.get("outname", "CV").strip() or "CV"
         
-        logger.info(f"PDF generado: {outname}.pdf")
+        logger.info(f"PDF generado: {outname}.pdf (Diseño: {design})")
         
         return send_file(
             pdf_buffer,

@@ -21,6 +21,13 @@ class Config:
     CV_TEMPLATE_FILE = DATA_DIR / "cv_template.json"  # Plantilla vacía
     TEMPLATES_FILE = DATA_DIR / "templates.json"
     
+    # Plantillas PDF disponibles
+    PDF_TEMPLATES = {
+        "classic": "cv_pdf_classic.j2",
+        "modern": "cv_pdf_modern.j2",
+        "minimal": "cv_pdf_minimal.j2"
+    }
+    
     # NUEVO: Configuración de sesiones en memoria
     USE_SESSION_STORAGE = os.environ.get("USE_SESSION_STORAGE", "True").lower() == "true"
     SESSION_TYPE = 'filesystem'  # Para producción
